@@ -5,740 +5,586 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>extract.pics – Extract Images from any Website</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#08080e;--s1:#0f0f1a;--s2:#161624;--s3:#1d1d2e;
-  --bd:#242436;--bd2:#2e2e44;
+  --bd:#252538;--bd2:#2e2e48;
   --a1:#5b5eff;--a2:#ff4d6d;--a3:#00e5c3;--a4:#ffc340;
   --tx:#e6e6f0;--mu:#68688a;--mu2:#9898b4;
-  --r:12px;
 }
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden}
-body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
-.glow{position:fixed;border-radius:50%;filter:blur(130px);pointer-events:none;z-index:0;animation:gb 22s ease-in-out infinite alternate}
-.g1{width:700px;height:700px;background:var(--a1);opacity:.07;top:-250px;left:-200px}
-.g2{width:500px;height:500px;background:var(--a2);opacity:.055;bottom:-100px;right:-150px;animation-delay:-9s}
-.g3{width:350px;height:350px;background:var(--a3);opacity:.05;top:45%;left:55%;animation-delay:-5s}
-@keyframes gb{from{transform:translate(0,0)}to{transform:translate(50px,35px) scale(1.1)}}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;font-size:15px;min-height:100vh;overflow-x:hidden}
 
-header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;border-bottom:1px solid var(--bd);background:rgba(8,8,14,.75);backdrop-filter:blur(20px)}
-.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.18rem;letter-spacing:-.5px;text-decoration:none;color:var(--tx);display:flex;align-items:center;gap:9px;cursor:pointer}
-.lm{width:30px;height:30px;background:linear-gradient(135deg,var(--a1),var(--a3));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0}
-.logo em{font-style:normal;color:var(--a1)}
-.hnav{display:flex;align-items:center;gap:18px}
-.hnav a{color:var(--mu);font-size:.84rem;text-decoration:none;transition:color .2s}
-.hnav a:hover{color:var(--tx)}
-.nbadge{background:rgba(0,229,195,.1);border:1px solid rgba(0,229,195,.25);color:#4de8d4;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:99px}
+/* ── GLOWS ── */
+.g{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;animation:gf 20s ease-in-out infinite alternate}
+.g1{width:600px;height:600px;background:var(--a1);opacity:.07;top:-200px;left:-150px}
+.g2{width:400px;height:400px;background:var(--a2);opacity:.06;bottom:-100px;right:-100px;animation-delay:-8s}
+@keyframes gf{from{transform:translate(0,0)}to{transform:translate(40px,30px) scale(1.1)}}
 
-.hero{position:relative;z-index:1;text-align:center;padding:82px 24px 58px;max-width:700px;margin:0 auto}
-.pill{display:inline-flex;align-items:center;gap:7px;background:rgba(91,94,255,.1);border:1px solid rgba(91,94,255,.25);color:#9b9eff;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border-radius:99px;margin-bottom:22px}
-.pill-dot{width:7px;height:7px;background:var(--a3);border-radius:50%;animation:blink 1.6s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2rem,5.5vw,3.1rem);line-height:1.1;letter-spacing:-1.5px;margin-bottom:15px}
-.gr{background:linear-gradient(100deg,var(--a1) 10%,var(--a3) 90%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hsub{color:var(--mu2);font-size:.98rem;max-width:460px;margin:0 auto 34px;font-weight:300}
-.ishell{max-width:640px;margin:0 auto;display:flex;align-items:center;background:var(--s1);border:1.5px solid var(--bd2);border-radius:var(--r);padding:5px 5px 5px 16px;gap:10px;transition:border-color .25s,box-shadow .25s}
-.ishell:focus-within{border-color:var(--a1);box-shadow:0 0 0 4px rgba(91,94,255,.12)}
-.ishell svg{flex-shrink:0;color:var(--mu)}
-.ishell input{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:'DM Sans',sans-serif;font-size:.95rem;min-width:0}
-.ishell input::placeholder{color:var(--mu)}
-.btn-go{background:linear-gradient(135deg,var(--a1),#7c5cf6);color:#fff;border:none;border-radius:9px;padding:11px 22px;font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:opacity .2s,transform .15s;white-space:nowrap;display:flex;align-items:center;gap:7px}
-.btn-go:hover{opacity:.87;transform:translateY(-1px)}
-.btn-go:disabled{opacity:.4;cursor:not-allowed;transform:none}
-.hint{font-size:.74rem;color:var(--mu);margin-top:11px;text-align:center}
-.hint kbd{background:var(--s2);border:1px solid var(--bd);border-radius:4px;padding:1px 6px;font-family:'JetBrains Mono',monospace;font-size:.7rem}
+/* ── HEADER ── */
+header{position:sticky;top:0;z-index:100;padding:14px 40px;border-bottom:1px solid var(--bd);background:rgba(8,8,14,.8);backdrop-filter:blur(18px);display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem;color:var(--tx);display:flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none}
+.logo-icon{width:28px;height:28px;background:linear-gradient(135deg,var(--a1),var(--a3));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.72rem}
+.logo em{color:var(--a1);font-style:normal}
+.hbadge{background:rgba(0,229,195,.1);border:1px solid rgba(0,229,195,.22);color:#4de8d4;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:99px}
 
-/* TERMINAL */
-#sbox{display:none;position:relative;z-index:1;max-width:560px;margin:0 auto 50px;background:var(--s1);border:1px solid var(--bd2);border-radius:var(--r);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
-.th{display:flex;align-items:center;gap:7px;padding:10px 15px;background:var(--s2);border-bottom:1px solid var(--bd)}
-.tdot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
-.td1{background:#ff5f57}.td2{background:#ffc02d}.td3{background:#28c940}
-.ttitle{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--mu);margin-left:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tbody{padding:16px 18px;display:flex;flex-direction:column;gap:8px}
-.sl{display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:.77rem;color:var(--mu);opacity:0;transform:translateX(-6px);transition:opacity .35s,transform .35s,color .3s}
-.sl.vis{opacity:1;transform:translateX(0)}
-.sl.act{color:var(--tx)}
-.sl.done{opacity:.55}
-.sl.done .sli{color:var(--a3)!important}
-.sl.act .sli{color:var(--a4);animation:flicker 1.4s ease-in-out infinite}
-@keyframes flicker{0%,100%{opacity:1}50%{opacity:.3}}
-.sli{width:17px;text-align:center;flex-shrink:0;font-size:.9rem}
-.pw{margin-top:10px;height:3px;background:var(--s3);border-radius:99px;overflow:hidden}
-.pf{height:100%;background:linear-gradient(90deg,var(--a1),var(--a3));border-radius:99px;width:0%;transition:width .6s cubic-bezier(.4,0,.2,1)}
+/* ── HERO ── */
+.hero{position:relative;z-index:1;text-align:center;padding:70px 20px 50px;max-width:680px;margin:0 auto}
+.pill{display:inline-flex;align-items:center;gap:6px;background:rgba(91,94,255,.1);border:1px solid rgba(91,94,255,.25);color:#a0a0ff;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 13px;border-radius:99px;margin-bottom:20px}
+.dot{width:6px;height:6px;background:var(--a3);border-radius:50%;animation:blink 1.6s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.9rem,5vw,3rem);line-height:1.1;letter-spacing:-1.5px;margin-bottom:14px}
+.grad{background:linear-gradient(100deg,var(--a1),var(--a3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sub{color:var(--mu2);font-size:.95rem;max-width:440px;margin:0 auto 32px;font-weight:300}
 
-/* RESULTS — block always, content toggled inside */
-#rwrap{display:block;position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:0 24px 80px}
-#results-inner{display:none}
-#results-inner.show{display:block}
-.toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:11px;padding:13px 17px;background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:18px}
-.tbl{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
-.tbr{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+/* ── INPUT ── */
+.ibox{max-width:620px;margin:0 auto;display:flex;align-items:center;background:var(--s1);border:1.5px solid var(--bd2);border-radius:12px;padding:5px 5px 5px 15px;gap:9px;transition:border-color .2s,box-shadow .2s}
+.ibox:focus-within{border-color:var(--a1);box-shadow:0 0 0 4px rgba(91,94,255,.12)}
+.ibox svg{color:var(--mu);flex-shrink:0}
+.ibox input{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:'DM Sans',sans-serif;font-size:.95rem;min-width:0}
+.ibox input::placeholder{color:var(--mu)}
+#btn{background:linear-gradient(135deg,var(--a1),#7c5cf6);color:#fff;border:none;border-radius:9px;padding:10px 20px;font-family:'Syne',sans-serif;font-weight:700;font-size:.86rem;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:opacity .2s}
+#btn:hover{opacity:.85}
+#btn:disabled{opacity:.4;cursor:not-allowed}
+.kbhint{font-size:.72rem;color:var(--mu);margin-top:10px;text-align:center}
+.kbhint kbd{background:var(--s2);border:1px solid var(--bd);border-radius:4px;padding:1px 6px;font-family:'JetBrains Mono',monospace;font-size:.7rem}
+
+/* ── TERMINAL ── */
+#term{display:none;position:relative;z-index:1;max-width:540px;margin:0 auto 44px;background:var(--s1);border:1px solid var(--bd2);border-radius:12px;overflow:hidden;box-shadow:0 16px 50px rgba(0,0,0,.45)}
+.term-bar{display:flex;align-items:center;gap:6px;padding:9px 14px;background:var(--s2);border-bottom:1px solid var(--bd)}
+.tb{width:10px;height:10px;border-radius:50%}
+.tb1{background:#ff5f57}.tb2{background:#ffc02d}.tb3{background:#28c940}
+.term-host{font-family:'JetBrains Mono',monospace;font-size:.67rem;color:var(--mu);margin-left:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.term-lines{padding:14px 16px;display:flex;flex-direction:column;gap:7px}
+.tl{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--mu);display:flex;align-items:center;gap:9px;opacity:0;transform:translateX(-5px);transition:opacity .3s,transform .3s,color .25s}
+.tl.v{opacity:1;transform:none}
+.tl.a{color:var(--tx)}
+.tl.d{opacity:.5}
+.tl.d .ti{color:var(--a3)!important}
+.tl.a .ti{color:var(--a4);animation:sp 1.3s ease-in-out infinite}
+@keyframes sp{0%,100%{opacity:1}50%{opacity:.2}}
+.ti{width:16px;text-align:center;flex-shrink:0}
+.prog-wrap{margin-top:9px;height:3px;background:var(--s3);border-radius:99px;overflow:hidden}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--a1),var(--a3));border-radius:99px;width:0;transition:width .55s cubic-bezier(.4,0,.2,1)}
+
+/* ── RESULTS
+   KEY FIX: #results is ALWAYS in the DOM with min-height:0 and overflow:hidden.
+   We ONLY add/remove class "open". We NEVER use display:none on it.
+   This means nothing can accidentally hide it.
+── */
+#results{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 20px 70px;min-height:0;overflow:hidden;max-height:0;transition:max-height .01s}
+#results.open{max-height:none;overflow:visible}
+
+/* ── TOOLBAR ── */
+.tb-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:12px 16px;background:var(--s1);border:1px solid var(--bd);border-radius:12px;margin-bottom:16px}
+.tb-l{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tb-r{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .rcnt{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem}
-.rhost{font-size:.76rem;color:var(--mu);background:var(--s2);padding:3px 10px;border-radius:6px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tabs{display:flex;gap:5px;flex-wrap:wrap}
-.tab{background:var(--s2);border:1px solid var(--bd);color:var(--mu);border-radius:7px;padding:5px 12px;font-size:.76rem;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
-.tab:hover:not(.on){border-color:var(--a1);color:var(--tx)}
-.tab.on{background:var(--a1);border-color:var(--a1);color:#fff}
-.tsel{background:var(--s2);border:1px solid var(--bd);color:var(--tx);border-radius:7px;padding:5px 10px;font-size:.76rem;outline:none;cursor:pointer;font-family:'DM Sans',sans-serif}
-.vt{display:flex;background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding:3px;gap:3px}
-.vb{background:none;border:none;color:var(--mu);cursor:pointer;padding:4px 8px;border-radius:5px;transition:all .2s;display:flex;align-items:center}
+.rhost{font-size:.73rem;color:var(--mu);background:var(--s2);padding:3px 9px;border-radius:6px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.filters{display:flex;gap:4px;flex-wrap:wrap}
+.ft{background:var(--s2);border:1px solid var(--bd);color:var(--mu);border-radius:7px;padding:4px 11px;font-size:.73rem;font-weight:500;cursor:pointer;transition:all .18s;white-space:nowrap}
+.ft:hover:not(.on){border-color:var(--a1);color:var(--tx)}
+.ft.on{background:var(--a1);border-color:var(--a1);color:#fff}
+.srt{background:var(--s2);border:1px solid var(--bd);color:var(--tx);border-radius:7px;padding:5px 9px;font-size:.73rem;outline:none;font-family:'DM Sans',sans-serif}
+.vt{display:flex;background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding:2px;gap:2px}
+.vb{background:none;border:none;color:var(--mu);cursor:pointer;padding:4px 7px;border-radius:5px;display:flex;align-items:center;transition:all .18s}
 .vb.on{background:var(--a1);color:#fff}
 .vb:hover:not(.on){color:var(--tx)}
-.btn-dla{background:linear-gradient(135deg,var(--a3),#00b89a);color:#070c0b;border:none;border-radius:7px;padding:7px 14px;font-family:'Syne',sans-serif;font-weight:700;font-size:.76rem;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.btn-dla{background:linear-gradient(135deg,var(--a3),#00b89a);color:#060e0b;border:none;border-radius:7px;padding:6px 13px;font-family:'Syne',sans-serif;font-weight:700;font-size:.73rem;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap}
 .btn-dla:hover{opacity:.85}
 
-#igrid{columns:4 240px;column-gap:12px}
-#igrid.lv{columns:1}
-.card{break-inside:avoid;background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:12px;overflow:hidden;cursor:pointer;position:relative;transition:transform .2s,box-shadow .2s,border-color .2s;animation:cIn .4s ease both}
-.card:hover{transform:translateY(-3px);box-shadow:0 14px 44px rgba(0,0,0,.65);border-color:var(--a1)}
-@keyframes cIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.card img{width:100%;display:block;object-fit:cover;background:var(--s2);min-height:80px;max-height:320px}
-.cfoot{padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.cname{font-size:.76rem;color:var(--tx);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px}
-.cdim{font-size:.67rem;color:var(--mu);margin-top:1px}
-.ctype{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;background:var(--s3);border:1px solid var(--bd2);color:var(--mu2);border-radius:5px;padding:2px 7px;flex-shrink:0}
-.cov{position:absolute;inset:0;background:rgba(8,8,14,.82);display:flex;align-items:center;justify-content:center;gap:9px;opacity:0;transition:opacity .2s;backdrop-filter:blur(4px)}
-.card:hover .cov{opacity:1}
-.ovb{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.17);color:#fff;border-radius:8px;padding:7px 12px;font-size:.76rem;font-weight:600;cursor:pointer;transition:background .2s;display:flex;align-items:center;gap:5px;text-decoration:none;font-family:'DM Sans',sans-serif}
-.ovb:hover{background:rgba(255,255,255,.2)}
-.ovb.pr{background:var(--a1);border-color:var(--a1)}
-.card.lc{display:flex;align-items:center;gap:14px;padding:10px;cursor:default}
+/* ── GRID ── */
+#grid{columns:4 230px;column-gap:11px}
+#grid.lv{columns:1}
+.card{break-inside:avoid;background:var(--s1);border:1px solid var(--bd);border-radius:11px;margin-bottom:11px;overflow:hidden;cursor:pointer;position:relative;transition:transform .18s,box-shadow .18s,border-color .18s;animation:ci .35s ease both}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 38px rgba(0,0,0,.6);border-color:var(--a1)}
+@keyframes ci{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.card img{width:100%;display:block;object-fit:cover;background:var(--s2);min-height:70px;max-height:300px}
+.card-foot{padding:7px 11px;display:flex;align-items:center;justify-content:space-between;gap:7px}
+.cf-name{font-size:.73rem;color:var(--tx);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px}
+.cf-type{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;background:var(--s3);border:1px solid var(--bd2);color:var(--mu2);border-radius:4px;padding:2px 6px;flex-shrink:0}
+.card-ov{position:absolute;inset:0;background:rgba(8,8,14,.83);display:flex;align-items:center;justify-content:center;gap:8px;opacity:0;transition:opacity .18s;backdrop-filter:blur(3px)}
+.card:hover .card-ov{opacity:1}
+.ob{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.17);color:#fff;border-radius:7px;padding:6px 11px;font-size:.73rem;font-weight:600;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;transition:background .18s;font-family:'DM Sans',sans-serif}
+.ob:hover{background:rgba(255,255,255,.2)}
+.ob.pr{background:var(--a1);border-color:var(--a1)}
+/* list card */
+.card.lc{display:flex;align-items:center;gap:13px;padding:9px;cursor:default}
 .card.lc:hover{transform:none;box-shadow:none;border-color:var(--bd2)}
-.card.lc img{width:90px;height:62px;flex-shrink:0;object-fit:cover;border-radius:7px;min-height:unset;max-height:unset;cursor:pointer}
-.card.lc .cfoot{flex:1;padding:0}
-.lcdl{background:var(--s3);border:1px solid var(--bd2);color:var(--tx);border-radius:7px;padding:6px 11px;font-size:.73rem;text-decoration:none;display:flex;align-items:center;gap:5px;flex-shrink:0;transition:background .2s}
-.lcdl:hover{background:var(--a1);border-color:var(--a1)}
-.empty{text-align:center;padding:80px 24px;color:var(--mu)}
-.empty .ei{font-size:2.6rem;margin-bottom:14px}
-.empty h3{font-family:'Syne',sans-serif;color:var(--tx);font-size:1.05rem;margin-bottom:7px}
-.empty p{font-size:.85rem;max-width:380px;margin:0 auto;line-height:1.7}
+.card.lc img{width:86px;height:58px;flex-shrink:0;object-fit:cover;border-radius:7px;min-height:unset;max-height:unset;cursor:pointer}
+.card.lc .card-foot{flex:1;padding:0}
+.lca{background:var(--s3);border:1px solid var(--bd2);color:var(--tx);border-radius:7px;padding:5px 10px;font-size:.7rem;text-decoration:none;display:flex;align-items:center;gap:4px;flex-shrink:0;transition:background .18s}
+.lca:hover{background:var(--a1);border-color:var(--a1)}
+/* empty */
+.mt{text-align:center;padding:70px 20px;color:var(--mu)}
+.mt-icon{font-size:2.4rem;margin-bottom:12px}
+.mt h3{font-family:'Syne',sans-serif;color:var(--tx);font-size:1rem;margin-bottom:6px}
+.mt p{font-size:.82rem;max-width:360px;margin:0 auto;line-height:1.7}
 
-#lb{display:none;position:fixed;inset:0;background:rgba(4,4,10,.93);z-index:2000;backdrop-filter:blur(14px);align-items:center;justify-content:center}
+/* ── LIGHTBOX ── */
+#lb{display:none;position:fixed;inset:0;background:rgba(3,3,9,.94);z-index:2000;backdrop-filter:blur(12px);align-items:center;justify-content:center}
 #lb.open{display:flex}
-.lbw{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;max-width:92vw}
-.lbw img{max-width:90vw;max-height:72vh;object-fit:contain;border-radius:var(--r);box-shadow:0 28px 80px rgba(0,0,0,.9)}
-.lbx{position:absolute;top:-13px;right:-13px;background:var(--s1);border:1px solid var(--bd2);color:var(--tx);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.85rem;z-index:1}
-.lbacts{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}
-.lbbtn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);color:var(--tx);border-radius:8px;padding:7px 14px;font-size:.8rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:5px;transition:background .2s;font-family:'DM Sans',sans-serif}
-.lbbtn:hover{background:rgba(255,255,255,.18)}
-.lbinfo{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--mu);text-align:center;max-width:500px;word-break:break-all}
-.lbnav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem}
-.lbnav:hover{background:rgba(255,255,255,.18)}
-.lbprev{left:-58px}.lbnext{right:-58px}
+.lbw{position:relative;display:flex;flex-direction:column;align-items:center;gap:13px;max-width:92vw}
+.lbw img{max-width:90vw;max-height:72vh;object-fit:contain;border-radius:12px;box-shadow:0 24px 70px rgba(0,0,0,.9)}
+.lbx{position:absolute;top:-12px;right:-12px;background:var(--s1);border:1px solid var(--bd2);color:var(--tx);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.82rem;z-index:1}
+.lb-acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.lbb{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);color:var(--tx);border-radius:7px;padding:6px 13px;font-size:.78rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:5px;transition:background .18s;font-family:'DM Sans',sans-serif}
+.lbb:hover{background:rgba(255,255,255,.17)}
+.lb-url{font-family:'JetBrains Mono',monospace;font-size:.64rem;color:var(--mu);text-align:center;max-width:480px;word-break:break-all}
+.lbnav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem}
+.lbnav:hover{background:rgba(255,255,255,.16)}
+.lbprev{left:-54px}.lbnext{right:-54px}
 
-.toast{position:fixed;bottom:26px;right:26px;background:var(--s1);border:1px solid var(--bd2);color:var(--tx);padding:10px 17px;border-radius:8px;font-size:.82rem;z-index:9998;box-shadow:0 8px 28px rgba(0,0,0,.5);display:flex;align-items:center;gap:7px;animation:ti .3s ease}
-@keyframes ti{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--s1);border:1px solid var(--bd2);color:var(--tx);padding:9px 16px;border-radius:8px;font-size:.8rem;z-index:9998;box-shadow:0 6px 24px rgba(0,0,0,.5);display:flex;align-items:center;gap:6px;animation:tin .25s ease}
+@keyframes tin{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
 
-.feats{position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:13px;max-width:940px;margin:0 auto;padding:60px 24px 20px}
-.fc{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:24px 20px;transition:border-color .2s,transform .2s}
+/* ── FEATURES ── */
+.feats{position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;max-width:920px;margin:0 auto;padding:50px 20px 18px}
+.fc{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:22px 18px;transition:border-color .2s,transform .2s}
 .fc:hover{border-color:var(--a1);transform:translateY(-2px)}
-.fi{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:13px}
+.fi{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;margin-bottom:12px}
 .fi1{background:rgba(91,94,255,.12)}.fi2{background:rgba(255,77,109,.12)}.fi3{background:rgba(0,229,195,.12)}.fi4{background:rgba(255,195,64,.12)}
-.fc h3{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;margin-bottom:6px}
-.fc p{font-size:.8rem;color:var(--mu);line-height:1.6}
-footer{position:relative;z-index:1;border-top:1px solid var(--bd);text-align:center;padding:26px 24px;color:var(--mu);font-size:.78rem}
+.fc h3{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;margin-bottom:5px}
+.fc p{font-size:.78rem;color:var(--mu);line-height:1.6}
+
+footer{position:relative;z-index:1;border-top:1px solid var(--bd);text-align:center;padding:24px;color:var(--mu);font-size:.76rem}
 footer a{color:var(--mu);text-decoration:none}
-footer a:hover{color:var(--tx)}
-@media(max-width:640px){
-  header{padding:13px 18px}
-  .hero{padding:50px 18px 34px}
-  #igrid{columns:2 140px}
+
+@media(max-width:600px){
+  header{padding:12px 16px}
+  .hero{padding:44px 16px 32px}
+  #grid{columns:2 140px}
   .lbprev,.lbnext{display:none}
-  .hnav a:not(.nbadge){display:none}
 }
 </style>
 </head>
 <body>
-<div class="glow g1"></div>
-<div class="glow g2"></div>
-<div class="glow g3"></div>
+
+<div class="g g1"></div>
+<div class="g g2"></div>
 
 <header>
-  <div class="logo" onclick="doReset()">
-    <div class="lm">🖼</div>extract<em>.pics</em>
-  </div>
-  <div class="hnav">
-    <span class="nbadge">Free &amp; No API</span>
-    <a href="#features">Features</a>
-    <a href="#how">How it works</a>
-  </div>
+  <a class="logo" href="javascript:void(0)" onclick="doReset()">
+    <div class="logo-icon">🖼</div>
+    extract<em>.pics</em>
+  </a>
+  <span class="hbadge">Free · No API</span>
 </header>
 
 <section class="hero">
-  <div class="pill"><div class="pill-dot"></div>No API key required</div>
-  <h1>Extract <span class="gr">every image</span><br>from any website</h1>
-  <p class="hsub">Paste any URL — we fetch the page and pull every image automatically. Free, no login, no API key.</p>
-  <div class="ishell">
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input type="url" id="url-in" placeholder="https://example.com" autocomplete="off" spellcheck="false"/>
-    <button class="btn-go" id="btn-go" onclick="startExtract()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Extract Images
+  <div class="pill"><div class="dot"></div>No API key required</div>
+  <h1>Extract <span class="grad">every image</span><br>from any website</h1>
+  <p class="sub">Paste any public URL — we fetch the page and pull every image automatically. Free, no login.</p>
+  <div class="ibox">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="urlin" type="url" placeholder="https://example.com" autocomplete="off" spellcheck="false"/>
+    <button id="btn" onclick="go()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Extract
     </button>
   </div>
-  <p class="hint">Press <kbd>Enter</kbd> to start &nbsp;·&nbsp; Works on any public URL</p>
+  <p class="kbhint">Press <kbd>Enter</kbd> to start</p>
 </section>
 
-<div id="sbox">
-  <div class="th">
-    <div class="tdot td1"></div><div class="tdot td2"></div><div class="tdot td3"></div>
-    <span class="ttitle" id="ttitle">extract.pics — browser session</span>
+<!-- TERMINAL — shown/hidden via display (not results) -->
+<div id="term">
+  <div class="term-bar">
+    <div class="tb tb1"></div><div class="tb tb2"></div><div class="tb tb3"></div>
+    <span class="term-host" id="term-host">extract.pics</span>
   </div>
-  <div class="tbody">
-    <div class="sl" id="sl0"><span class="sli">⏳</span><span id="sl0t">Waiting for browser...</span></div>
-    <div class="sl" id="sl1"><span class="sli">🌐</span><span id="sl1t">Loading page...</span></div>
-    <div class="sl" id="sl2"><span class="sli">↕️</span><span id="sl2t">Scrolling down...</span></div>
-    <div class="sl" id="sl3"><span class="sli">🔍</span><span id="sl3t">Finding images...</span></div>
-    <div class="sl" id="sl4"><span class="sli">🧠</span><span id="sl4t">Analyzing images...</span></div>
-    <div class="sl" id="sl5"><span class="sli">✅</span><span id="sl5t">Done!</span></div>
-    <div class="pw"><div class="pf" id="pf"></div></div>
+  <div class="term-lines">
+    <div class="tl" id="tl0"><span class="ti">⏳</span><span id="tl0t">Waiting for browser...</span></div>
+    <div class="tl" id="tl1"><span class="ti">🌐</span><span id="tl1t">Loading page...</span></div>
+    <div class="tl" id="tl2"><span class="ti">↕️</span><span id="tl2t">Scrolling down...</span></div>
+    <div class="tl" id="tl3"><span class="ti">🔍</span><span id="tl3t">Finding images...</span></div>
+    <div class="tl" id="tl4"><span class="ti">🧠</span><span id="tl4t">Analyzing images...</span></div>
+    <div class="tl" id="tl5"><span class="ti">✅</span><span id="tl5t">Done!</span></div>
+    <div class="prog-wrap"><div class="prog-bar" id="pbar"></div></div>
   </div>
 </div>
 
-<!-- #rwrap is ALWAYS display:block. Only #results-inner toggles -->
-<div id="rwrap">
-  <div id="results-inner">
-    <div class="toolbar">
-      <div class="tbl">
-        <span class="rcnt" id="rcnt">0 images</span>
-        <span class="rhost" id="rhost"></span>
-        <div class="tabs">
-          <button class="tab on" data-f="all"  onclick="doFilter('all',this)">All</button>
-          <button class="tab"    data-f="jpg"  onclick="doFilter('jpg',this)">JPG</button>
-          <button class="tab"    data-f="png"  onclick="doFilter('png',this)">PNG</button>
-          <button class="tab"    data-f="gif"  onclick="doFilter('gif',this)">GIF</button>
-          <button class="tab"    data-f="svg"  onclick="doFilter('svg',this)">SVG</button>
-          <button class="tab"    data-f="webp" onclick="doFilter('webp',this)">WebP</button>
-          <button class="tab"    data-f="avif" onclick="doFilter('avif',this)">AVIF</button>
-        </div>
-      </div>
-      <div class="tbr">
-        <select class="tsel" id="ssort" onchange="renderGrid()">
-          <option value="default">Default order</option>
-          <option value="name">Sort by name</option>
-          <option value="type">Sort by type</option>
-        </select>
-        <div class="vt">
-          <button class="vb on" id="vbg" onclick="setView('grid')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-          </button>
-          <button class="vb" id="vbl" onclick="setView('list')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="9" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1.5" fill="currentColor" stroke="none"/></svg>
-          </button>
-        </div>
-        <button class="btn-dla" onclick="dlAll()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download All
-        </button>
+<!-- RESULTS — NEVER uses display:none, only class "open" toggles max-height -->
+<div id="results">
+  <!-- toolbar -->
+  <div class="tb-row">
+    <div class="tb-l">
+      <span class="rcnt" id="rcnt">0 images</span>
+      <span class="rhost" id="rhost"></span>
+      <div class="filters">
+        <button class="ft on" data-f="all"  onclick="filt('all',this)">All</button>
+        <button class="ft"    data-f="jpg"  onclick="filt('jpg',this)">JPG</button>
+        <button class="ft"    data-f="png"  onclick="filt('png',this)">PNG</button>
+        <button class="ft"    data-f="gif"  onclick="filt('gif',this)">GIF</button>
+        <button class="ft"    data-f="svg"  onclick="filt('svg',this)">SVG</button>
+        <button class="ft"    data-f="webp" onclick="filt('webp',this)">WebP</button>
+        <button class="ft"    data-f="avif" onclick="filt('avif',this)">AVIF</button>
       </div>
     </div>
-    <div id="igrid"></div>
+    <div class="tb-r">
+      <select class="srt" id="srt" onchange="redraw()">
+        <option value="0">Default order</option>
+        <option value="1">Sort by name</option>
+        <option value="2">Sort by type</option>
+      </select>
+      <div class="vt">
+        <button class="vb on" id="vbg" onclick="setV('grid')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        </button>
+        <button class="vb" id="vbl" onclick="setV('list')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="9" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1.5" fill="currentColor" stroke="none"/></svg>
+        </button>
+      </div>
+      <button class="btn-dla" onclick="dlAll()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download All
+      </button>
+    </div>
   </div>
+  <div id="grid"></div>
 </div>
 
-<section id="how" style="position:relative;z-index:1;max-width:820px;margin:0 auto;padding:60px 24px 10px;text-align:center">
-  <h2 style="font-family:'Syne',sans-serif;font-size:1.65rem;font-weight:800;margin-bottom:9px">How it works</h2>
-  <p style="color:var(--mu2);font-size:.88rem;margin-bottom:34px">Three steps, completely free</p>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:13px;text-align:left">
-    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:22px"><div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--a1);margin-bottom:9px">01</div><h3 style="font-family:'Syne',sans-serif;font-size:.88rem;margin-bottom:5px">Paste a URL</h3><p style="font-size:.79rem;color:var(--mu)">Any public website — news, e-commerce, blog.</p></div>
-    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:22px"><div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--a2);margin-bottom:9px">02</div><h3 style="font-family:'Syne',sans-serif;font-size:.88rem;margin-bottom:5px">We fetch &amp; parse</h3><p style="font-size:.79rem;color:var(--mu)">Page fetched via CORS proxy, all image sources deeply scanned.</p></div>
-    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:22px"><div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--a3);margin-bottom:9px">03</div><h3 style="font-family:'Syne',sans-serif;font-size:.88rem;margin-bottom:5px">Preview &amp; Download</h3><p style="font-size:.79rem;color:var(--mu)">Filter by type, preview in lightbox, download all at once.</p></div>
-  </div>
-</section>
-
 <div class="feats" id="features">
-  <div class="fc"><div class="fi fi1">⚡</div><h3>No API Key</h3><p>100% free. Uses public CORS proxies.</p></div>
-  <div class="fc"><div class="fi fi2">🎯</div><h3>Deep Extraction</h3><p>img src, srcset, CSS url(), og:image, data-src lazy-load &amp; more.</p></div>
-  <div class="fc"><div class="fi fi3">🔧</div><h3>Smart Filters</h3><p>Filter by JPG, PNG, GIF, SVG, WebP, AVIF.</p></div>
-  <div class="fc"><div class="fi fi4">📦</div><h3>Bulk Download</h3><p>Download all visible images with one click.</p></div>
+  <div class="fc"><div class="fi fi1">⚡</div><h3>No API Key</h3><p>Uses free public CORS proxies. No sign-up, no cost.</p></div>
+  <div class="fc"><div class="fi fi2">🎯</div><h3>Deep Extraction</h3><p>img src, srcset, CSS url(), og:image, data-src lazy attributes.</p></div>
+  <div class="fc"><div class="fi fi3">🔧</div><h3>Smart Filters</h3><p>Filter by format. Grid or list view. Sort by name or type.</p></div>
+  <div class="fc"><div class="fi fi4">📦</div><h3>Bulk Download</h3><p>Download all visible images in one click.</p></div>
 </div>
 
 <footer><p>© 2025 extract.pics &nbsp;·&nbsp; <a href="#">Privacy</a> &nbsp;·&nbsp; <a href="#">Terms</a></p></footer>
 
-<div id="lb" onclick="lbBgClick(event)">
+<!-- LIGHTBOX -->
+<div id="lb" onclick="lbBg(event)">
   <div class="lbw">
     <button class="lbx" onclick="closeLb()">✕</button>
     <button class="lbnav lbprev" onclick="lbNav(-1)">‹</button>
     <button class="lbnav lbnext" onclick="lbNav(+1)">›</button>
-    <img id="lbimg" src="" alt="">
-    <div class="lbacts" id="lbacts"></div>
-    <div class="lbinfo" id="lbinfo"></div>
+    <img id="lbi" src="" alt="">
+    <div class="lb-acts" id="lba"></div>
+    <div class="lb-url" id="lbu"></div>
   </div>
 </div>
 
 <script>
-// ─────────────────────────────────────────────────────────────────
-// THE KEY FIX: We use a simple integer "generation" counter.
-// Every new extract run increments it. Every callback checks if
-// its generation still matches the current one before doing anything.
-// This means stale callbacks from failed proxies are COMPLETELY
-// ignored — they can never touch the DOM.
-// ─────────────────────────────────────────────────────────────────
+/* ================================================================
+   ARCHITECTURE:
+   - GEN counter: every run gets a unique number. ALL callbacks
+     check GEN before touching DOM. Stale callbacks = instant exit.
+   - XHR only, zero promises = zero unhandled rejections.
+   - #results is ALWAYS block-level in DOM. Only CSS class "open"
+     controls visibility via max-height. Nothing ever sets
+     display:none on #results.
+   - Results are built into #grid BEFORE "open" class is added.
+   - No scrollIntoView calls anywhere (was causing re-render loops).
+================================================================ */
 
-var GEN = 0;          // current generation
-var allImgs   = [];
-var curFilter = 'all';
-var curView   = 'grid';
-var lbIdx     = 0;
+var GEN = 0;
+var IMGS = [];
+var CUR_F = 'all';
+var CUR_V = 'grid';
+var LB_IDX = 0;
 
-// ── DOM shortcuts ──
-function el(id){ return document.getElementById(id); }
-function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+/* ── shortcuts ── */
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
-// ── keyboard ──
-el('url-in').addEventListener('keydown', function(e){ if(e.key==='Enter') startExtract(); });
-document.addEventListener('keydown', function(e){
-  if(e.key==='Escape')     closeLb();
-  if(e.key==='ArrowLeft')  lbNav(-1);
-  if(e.key==='ArrowRight') lbNav(+1);
+/* ── keyboard ── */
+$('urlin').addEventListener('keydown',function(e){if(e.key==='Enter')go();});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closeLb();
+  if(e.key==='ArrowLeft')lbNav(-1);
+  if(e.key==='ArrowRight')lbNav(+1);
 });
 
-// ── terminal helpers ──
-function slVis(id){ el(id).classList.add('vis'); }
-function slAct(id){ el(id).classList.add('vis','act'); }
-function slDone(id){ el(id).classList.remove('act'); el(id).classList.add('done'); }
-function allStepsDone(){ ['sl0','sl1','sl2','sl3','sl4'].forEach(slDone); }
-function setProg(p,c){
-  var pf=el('pf'); pf.style.width=p+'%';
-  if(c) pf.style.background=c;
-}
+/* ── progress ── */
+function prog(p,c){var b=$('pbar');b.style.width=p+'%';if(c)b.style.background=c;}
 
-// ─────────────────────────────────────────────────────────────────
-// FETCH — uses XMLHttpRequest so we have zero unhandled promise
-// rejections. Each proxy is tried sequentially via callbacks.
-// gen = the generation this call belongs to.
-// onSuccess(html, proxyName) / onFail(errorMsg)
-// ─────────────────────────────────────────────────────────────────
-function fetchWithProxies(url, gen, onSuccess, onFail){
-  var proxies = [
-    {
-      name: 'allorigins',
-      url: 'https://api.allorigins.win/get?url='+encodeURIComponent(url)+'&t='+Date.now(),
-      parse: function(text){
-        var j = JSON.parse(text);
-        if(!j.contents || j.contents.length < 100) throw new Error('empty');
-        return j.contents;
-      }
-    },
-    {
-      name: 'corsproxy.io',
-      url: 'https://corsproxy.io/?'+encodeURIComponent(url),
-      parse: function(text){
-        if(!text || text.length < 100) throw new Error('empty');
-        return text;
-      }
-    },
-    {
-      name: 'codetabs',
-      url: 'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(url),
-      parse: function(text){
-        if(!text || text.length < 100) throw new Error('empty');
-        return text;
-      }
-    }
+/* ── step helpers ── */
+function sv(id){$(id).classList.add('v');}
+function sa(id){$(id).classList.add('v','a');}
+function sd(id){$(id).classList.remove('a');$(id).classList.add('d');}
+function doneAll(){['tl0','tl1','tl2','tl3','tl4'].forEach(sd);}
+
+/* ================================================================
+   FETCH  — pure XHR, sequential proxies, GEN-checked
+================================================================ */
+function fetchPage(url, gen, onOK, onErr){
+  var proxies=[
+    {n:'allorigins', u:'https://api.allorigins.win/get?url='+encodeURIComponent(url)+'&t='+Date.now(),
+     p:function(t){var j=JSON.parse(t);if(!j.contents||j.contents.length<150)throw 0;return j.contents;}},
+    {n:'corsproxy.io', u:'https://corsproxy.io/?'+encodeURIComponent(url),
+     p:function(t){if(!t||t.length<150)throw 0;return t;}},
+    {n:'codetabs', u:'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(url),
+     p:function(t){if(!t||t.length<150)throw 0;return t;}}
   ];
-
-  var idx = 0;
-
-  function tryNext(){
-    // Stale generation? Stop immediately, touch nothing.
-    if(GEN !== gen) return;
-
-    if(idx >= proxies.length){
-      if(GEN === gen) onFail('All proxies failed. Host on GitHub Pages for best results.');
-      return;
-    }
-
-    var proxy = proxies[idx++];
-    var xhr = new XMLHttpRequest();
-    xhr.timeout = 15000;
-
-    xhr.onload = function(){
-      // Stale? Ignore completely.
-      if(GEN !== gen) return;
-      if(xhr.status >= 200 && xhr.status < 300){
-        try{
-          var html = proxy.parse(xhr.responseText);
-          onSuccess(html, proxy.name);   // ← SUCCESS: done
-        } catch(e){
-          tryNext();  // parse failed, try next proxy
-        }
-      } else {
-        tryNext();  // HTTP error, try next proxy
+  var i=0;
+  function next(){
+    if(GEN!==gen)return;           /* stale — stop everything */
+    if(i>=proxies.length){onErr('All proxies failed. Host on GitHub Pages for best results.');return;}
+    var px=proxies[i++];
+    var x=new XMLHttpRequest();
+    x.timeout=14000;
+    x.onload=function(){
+      if(GEN!==gen)return;         /* stale */
+      if(x.status>=200&&x.status<300){
+        try{var h=px.p(x.responseText);onOK(h,px.n);return;}catch(e){}
       }
+      next();
     };
-
-    xhr.onerror   = function(){ if(GEN===gen) tryNext(); };
-    xhr.ontimeout = function(){ if(GEN===gen) tryNext(); };
-
-    xhr.open('GET', proxy.url, true);
-    xhr.send();
+    x.onerror  =function(){if(GEN===gen)next();};
+    x.ontimeout=function(){if(GEN===gen)next();};
+    x.open('GET',px.u,true);
+    x.send();
   }
-
-  tryNext();
+  next();
 }
 
-// ─────────────────────────────────────────────────────────────────
-// MAIN EXTRACT
-// ─────────────────────────────────────────────────────────────────
-function startExtract(){
-  var raw = el('url-in').value.trim();
-  if(!raw){ showToast('⚠️ Please enter a URL'); return; }
-  if(!/^https?:\/\//i.test(raw)) raw = 'https://'+raw;
-  try{ new URL(raw); } catch(e){ showToast('⚠️ Invalid URL'); return; }
+/* ================================================================
+   MAIN
+================================================================ */
+function go(){
+  var raw=$('urlin').value.trim();
+  if(!raw){toast('⚠️ Enter a URL');return;}
+  if(!/^https?:\/\//i.test(raw))raw='https://'+raw;
+  try{new URL(raw);}catch(e){toast('⚠️ Invalid URL');return;}
 
-  // ── Increment generation — all previous callbacks become stale ──
+  /* new generation — kills all in-flight callbacks */
   GEN++;
-  var myGen = GEN;
+  var G=GEN;
 
-  el('btn-go').disabled = true;
-  allImgs = [];
+  $('btn').disabled=true;
+  IMGS=[];
 
-  // Hide results
-  el('results-inner').classList.remove('show');
+  /* close results without display tricks */
+  $('results').classList.remove('open');
 
-  // Reset & show terminal
-  el('sbox').style.display = 'block';
-  ['sl0','sl1','sl2','sl3','sl4','sl5'].forEach(function(id){ el(id).className='sl'; });
-  var pf = el('pf');
-  pf.style.transition = 'none';
-  pf.style.width = '0%';
-  pf.style.background = 'linear-gradient(90deg,var(--a1),var(--a3))';
-  void pf.offsetHeight;
-  pf.style.transition = 'width .6s cubic-bezier(.4,0,.2,1)';
-  el('ttitle').textContent = new URL(raw).hostname + ' — browser session';
-  el('sbox').scrollIntoView({behavior:'smooth',block:'center'});
+  /* reset + show terminal */
+  $('term').style.display='block';
+  ['tl0','tl1','tl2','tl3','tl4','tl5'].forEach(function(id){$(id).className='tl';});
+  var pb=$('pbar');
+  pb.style.transition='none';pb.style.width='0';
+  pb.style.background='linear-gradient(90deg,var(--a1),var(--a3))';
+  void pb.offsetHeight;
+  pb.style.transition='width .55s cubic-bezier(.4,0,.2,1)';
+  $('term-host').textContent=new URL(raw).hostname+' — browser session';
 
-  // Step 0
-  slAct('sl0'); setProg(8);
+  /* step 0 */
+  sa('tl0');prog(8);
 
   setTimeout(function(){
-    if(GEN!==myGen) return;
-    // Step 1
-    slDone('sl0'); slAct('sl1'); setProg(25);
-    el('sl1t').textContent = 'Loading page... ('+new URL(raw).hostname+')';
+    if(GEN!==G)return;
+    sd('tl0');sa('tl1');prog(25);
+    $('tl1t').textContent='Loading page... ('+new URL(raw).hostname+')';
 
-    fetchWithProxies(raw, myGen,
-
-      // ── SUCCESS CALLBACK ──────────────────────────────────────
-      function(html, proxyName){
-        if(GEN!==myGen) return;  // double-check generation
-
-        // Step 2
-        slDone('sl1'); slAct('sl2'); setProg(45);
-        el('sl2t').textContent = 'Scrolling down... (via '+proxyName+')';
+    fetchPage(raw, G,
+      /* ── SUCCESS ── */
+      function(html,pname){
+        if(GEN!==G)return;
+        sd('tl1');sa('tl2');prog(45);
+        $('tl2t').textContent='Scrolling down... (via '+pname+')';
 
         setTimeout(function(){
-          if(GEN!==myGen) return;
-
-          // Step 3
-          slDone('sl2'); slAct('sl3'); setProg(65);
-          var imgs = extractImages(html, raw);
-          el('sl3t').textContent = 'Finding images... ('+imgs.length+' found)';
+          if(GEN!==G)return;
+          sd('tl2');sa('tl3');prog(65);
+          var imgs=parse(html,raw);
+          $('tl3t').textContent='Finding images... ('+imgs.length+' found)';
 
           setTimeout(function(){
-            if(GEN!==myGen) return;
-
-            // Step 4
-            slDone('sl3'); slAct('sl4'); setProg(85);
-            el('sl4t').textContent = 'Analyzing images... deduplicating';
+            if(GEN!==G)return;
+            sd('tl3');sa('tl4');prog(82);
+            $('tl4t').textContent='Analyzing images... deduplicating';
 
             setTimeout(function(){
-              if(GEN!==myGen) return;
+              if(GEN!==G)return;
+              doneAll();prog(100);
+              sv('tl5');
 
-              // Step 5
-              allStepsDone();
-              setProg(100);
-              slVis('sl5');
+              if(imgs.length>0){
+                IMGS=imgs;
+                $('tl5').classList.add('a');
+                $('tl5t').textContent='Done! Found '+imgs.length+' image'+(imgs.length!==1?'s':'');
 
-              if(imgs.length > 0){
-                allImgs = imgs;
-                el('sl5').classList.add('act');
-                el('sl5t').textContent = 'Done! Found '+imgs.length+' image'+(imgs.length!==1?'s':'');
+                /* Build grid first, THEN open results */
+                CUR_F='all';
+                document.querySelectorAll('.ft').forEach(function(t){t.classList.toggle('on',t.dataset.f==='all');});
+                $('rhost').textContent=new URL(raw).hostname;
+                redraw();                       /* populate #grid */
+                $('results').classList.add('open'); /* show — max-height:none */
 
-                // Build grid BEFORE showing
-                curFilter = 'all';
-                document.querySelectorAll('.tab').forEach(function(t){
-                  t.classList.toggle('on', t.dataset.f==='all');
-                });
-                el('rhost').textContent = new URL(raw).hostname;
-                renderGrid();
-
-                // Show — this is the FINAL step, nothing after this
-                el('results-inner').classList.add('show');
-                el('results-inner').scrollIntoView({behavior:'smooth'});
-
-                setTimeout(function(){
-                  if(GEN===myGen){ slDone('sl5'); }
-                  el('btn-go').disabled = false;
-                }, 600);
-
+                setTimeout(function(){if(GEN===G)sd('tl5');$('btn').disabled=false;},700);
               } else {
-                el('sl5').querySelector('.sli').textContent = '⚠️';
-                el('sl5t').textContent = 'No images found on this page.';
-                el('igrid').innerHTML = '<div class="empty"><div class="ei">🔍</div><h3>No images found</h3><p>The site may load images via JavaScript. Try hosting on GitHub Pages for better results.</p></div>';
-                el('rcnt').textContent = '0 images';
-                el('rhost').textContent = new URL(raw).hostname;
-                el('results-inner').classList.add('show');
-                el('btn-go').disabled = false;
+                $('tl5').querySelector('.ti').textContent='⚠️';
+                $('tl5t').textContent='No images found on this page.';
+                showMsg('🔍','No images found','The site may load images via JavaScript (React/Next.js). Try a static page or host on GitHub Pages.');
+                $('results').classList.add('open');
+                $('btn').disabled=false;
               }
-
-            }, 400);
-          }, 500);
-        }, 600);
+            },420);
+          },520);
+        },620);
       },
-
-      // ── FAIL CALLBACK ─────────────────────────────────────────
-      function(errMsg){
-        if(GEN!==myGen) return;  // stale, ignore
-
-        allStepsDone();
-        setProg(100,'linear-gradient(90deg,var(--a2),#ff7896)');
-        el('sl5').querySelector('.sli').textContent = '❌';
-        slVis('sl5');
-        el('sl5t').textContent = 'Failed: '+String(errMsg).slice(0,80);
-
-        el('igrid').innerHTML = '<div class="empty"><div class="ei">⚠️</div><h3>Could not fetch page</h3><p>'+esc(String(errMsg))+'</p></div>';
-        el('rcnt').textContent = '0 images';
-        el('rhost').textContent = '';
-        el('results-inner').classList.add('show');
-        el('btn-go').disabled = false;
+      /* ── ERROR ── */
+      function(msg){
+        if(GEN!==G)return;
+        doneAll();prog(100,'linear-gradient(90deg,var(--a2),#ff789a)');
+        $('tl5').querySelector('.ti').textContent='❌';
+        sv('tl5');
+        $('tl5t').textContent='Failed: '+String(msg).slice(0,70);
+        showMsg('⚠️','Could not fetch page',String(msg));
+        $('results').classList.add('open');
+        $('btn').disabled=false;
       }
     );
-
-  }, 600);
+  },580);
 }
 
-// ─────────────────────────────────────────────────────────────────
-// IMAGE EXTRACTION
-// ─────────────────────────────────────────────────────────────────
-function extractImages(html, pageUrl){
-  var base = new URL(pageUrl);
-  var seen = new Set();
-  var out  = [];
+function showMsg(icon,title,body){
+  $('rcnt').textContent='0 images';
+  $('rhost').textContent='';
+  $('grid').innerHTML='<div class="mt"><div class="mt-icon">'+icon+'</div><h3>'+esc(title)+'</h3><p>'+esc(body)+'</p></div>';
+}
 
-  function toAbs(src){
-    if(!src) return null;
-    src = src.trim().replace(/^['"`]|['"`]$/g,'').trim();
-    if(!src || src.startsWith('data:') || src.length < 4) return null;
+/* ================================================================
+   PARSE
+================================================================ */
+function parse(html,pageUrl){
+  var base=new URL(pageUrl),seen=new Set(),out=[];
+  function abs(s){
+    if(!s)return null;
+    s=s.trim().replace(/^['"`]|['"`]$/g,'').trim();
+    if(!s||s.startsWith('data:')||s.length<4)return null;
     try{
-      if(/^https?:\/\//i.test(src)) return src;
-      if(src.startsWith('//'))      return base.protocol+src;
-      if(src.startsWith('/'))       return base.origin+src;
-      return new URL(src, pageUrl).href;
-    } catch(e){ return null; }
+      if(/^https?:\/\//i.test(s))return s;
+      if(s.startsWith('//'))return base.protocol+s;
+      if(s.startsWith('/'))return base.origin+s;
+      return new URL(s,pageUrl).href;
+    }catch(e){return null;}
   }
-
-  function add(src){
-    var u = toAbs(src);
-    if(!u) return;
-    var lo = u.toLowerCase();
-    var hasExt  = /\.(jpe?g|png|gif|webp|svg|avif|bmp|ico|tiff?)(\?|#|$)/i.test(lo);
-    var hasPath = /\/(image|img|photo|picture|thumb|asset|media|upload|static|cdn|file)/i.test(lo);
-    if(!hasExt && !hasPath) return;
-    var key = u.split('?')[0].split('#')[0];
-    if(seen.has(key)) return;
-    seen.add(key);
-    out.push({src:u, type:getExt(u), name:getFilename(u)});
+  function add(s){
+    var u=abs(s);if(!u)return;
+    var lo=u.toLowerCase();
+    if(!/\.(jpe?g|png|gif|webp|svg|avif|bmp|ico|tiff?)(\?|#|$)/i.test(lo)&&
+       !/\/(image|img|photo|picture|thumb|asset|media|upload|static|cdn)/i.test(lo))return;
+    var k=u.split('?')[0].split('#')[0];
+    if(seen.has(k))return;seen.add(k);
+    out.push({src:u,type:ext(u),name:fname(u)});
   }
-
   var m;
-  // 1. img tags
-  var imgRe = /<img([^>]{0,3000})>/gi;
-  while((m=imgRe.exec(html))!==null){
+  /* img tags */
+  var re=/<img([^>]{0,3000})>/gi;
+  while((m=re.exec(html))!==null){
     var a=m[1];
-    ['src','data-src','data-lazy-src','data-original','data-url','data-img','data-image','data-lazy','data-echo'].forEach(function(attr){
-      var r=a.match(new RegExp(attr+'\\s*=\\s*["\']([^"\'\\s>]+)','i'));
-      if(r) add(r[1]);
+    ['src','data-src','data-lazy-src','data-original','data-url','data-img','data-lazy','data-echo'].forEach(function(at){
+      var r=a.match(new RegExp(at+'\\s*=\\s*["\']([^"\'\\s>]+)','i'));if(r)add(r[1]);
     });
-    ['srcset','data-srcset'].forEach(function(attr){
-      var r=a.match(new RegExp(attr+'\\s*=\\s*["\']([^"\']+)','i'));
-      if(r) r[1].split(',').forEach(function(s){ add(s.trim().split(/\s+/)[0]); });
+    ['srcset','data-srcset'].forEach(function(at){
+      var r=a.match(new RegExp(at+'\\s*=\\s*["\']([^"\']+)','i'));
+      if(r)r[1].split(',').forEach(function(s){add(s.trim().split(/\s+/)[0]);});
     });
   }
-  // 2. source tags
-  var srcRe = /<source([^>]{0,1000})>/gi;
-  while((m=srcRe.exec(html))!==null){
+  /* source */
+  re=/<source([^>]{0,1000})>/gi;
+  while((m=re.exec(html))!==null){
     var ss=m[1].match(/srcset\s*=\s*["']([^"']+)/i);
-    if(ss) ss[1].split(',').forEach(function(s){ add(s.trim().split(/\s+/)[0]); });
-    var sr=m[1].match(/\bsrc\s*=\s*["']([^"']+)/i);
-    if(sr) add(sr[1]);
+    if(ss)ss[1].split(',').forEach(function(s){add(s.trim().split(/\s+/)[0]);});
+    var sr=m[1].match(/\bsrc\s*=\s*["']([^"']+)/i);if(sr)add(sr[1]);
   }
-  // 3. CSS url()
-  var cssRe=/url\(\s*["']?([^"')\s]+)["']?\s*\)/gi;
-  while((m=cssRe.exec(html))!==null) add(m[1]);
-  // 4. og/twitter meta
-  var metaRe=/<meta[^>]{0,600}>/gi;
-  while((m=metaRe.exec(html))!==null){
-    if(/(og:image|twitter:image)/i.test(m[0])){
-      var c=m[0].match(/content\s*=\s*["']([^"']+)/i);
-      if(c) add(c[1]);
-    }
+  /* CSS url() */
+  re=/url\(\s*["']?([^"')\s]+)["']?\s*\)/gi;
+  while((m=re.exec(html))!==null)add(m[1]);
+  /* og/twitter */
+  re=/<meta[^>]{0,600}>/gi;
+  while((m=re.exec(html))!==null){
+    if(/(og:image|twitter:image)/i.test(m[0])){var c=m[0].match(/content\s*=\s*["']([^"']+)/i);if(c)add(c[1]);}
   }
-  // 5. a href to images
-  var aRe=/<a[^>]{0,500}href\s*=\s*["']([^"']+\.(?:jpe?g|png|gif|webp|svg|avif|bmp))(\?[^"']*)?["']/gi;
-  while((m=aRe.exec(html))!==null) add(m[1]+(m[2]||''));
-  // 6. JS string literals
-  var jsRe=/["'`](https?:\/\/[^"'`\s]{8,}\.(jpe?g|png|gif|webp|svg|avif|bmp|ico))["'`]/gi;
-  while((m=jsRe.exec(html))!==null) add(m[1]);
-  // 7. data-bg
-  var bgRe=/data-(?:bg|background)\s*=\s*["']?(https?:\/\/[^"'\s>]+)/gi;
-  while((m=bgRe.exec(html))!==null) add(m[1]);
-  // 8. video poster
-  var vidRe=/<video[^>]{0,400}poster\s*=\s*["']([^"']+)/gi;
-  while((m=vidRe.exec(html))!==null) add(m[1]);
-
+  /* a href */
+  re=/<a[^>]{0,500}href\s*=\s*["']([^"']+\.(?:jpe?g|png|gif|webp|svg|avif|bmp))(\?[^"']*)?["']/gi;
+  while((m=re.exec(html))!==null)add(m[1]+(m[2]||''));
+  /* JS strings */
+  re=/["'`](https?:\/\/[^"'`\s]{8,}\.(jpe?g|png|gif|webp|svg|avif|bmp|ico))["'`]/gi;
+  while((m=re.exec(html))!==null)add(m[1]);
+  /* data-bg */
+  re=/data-(?:bg|background)\s*=\s*["']?(https?:\/\/[^"'\s>]+)/gi;
+  while((m=re.exec(html))!==null)add(m[1]);
+  /* video poster */
+  re=/<video[^>]{0,400}poster\s*=\s*["']([^"']+)/gi;
+  while((m=re.exec(html))!==null)add(m[1]);
   return out;
 }
+function ext(u){try{var m=new URL(u).pathname.match(/\.([a-zA-Z0-9]+)$/);return m?m[1].toLowerCase().replace('jpeg','jpg'):'img';}catch(e){return 'img';}}
+function fname(u){try{return decodeURIComponent(new URL(u).pathname.split('/').filter(Boolean).pop())||'image';}catch(e){return 'image';}}
 
-function getExt(url){
-  try{ var m=new URL(url).pathname.match(/\.([a-zA-Z0-9]+)$/); return m?m[1].toLowerCase().replace('jpeg','jpg'):'img'; }
-  catch(e){ return 'img'; }
-}
-function getFilename(url){
-  try{ return decodeURIComponent(new URL(url).pathname.split('/').filter(Boolean).pop())||'image'; }
-  catch(e){ return 'image'; }
-}
-
-// ─────────────────────────────────────────────────────────────────
-// RENDER
-// ─────────────────────────────────────────────────────────────────
-function renderGrid(){
-  var grid = el('igrid');
-  grid.innerHTML = '';
-  grid.className = curView==='list' ? 'lv' : '';
-  var filtered = getFiltered();
-  el('rcnt').textContent = filtered.length+' image'+(filtered.length!==1?'s':'');
-
-  if(!filtered.length){
-    grid.innerHTML='<div class="empty"><div class="ei">🔍</div><h3>No images match</h3><p>Try a different filter.</p></div>';
-    return;
-  }
-
-  filtered.forEach(function(img, i){
-    var gi = allImgs.indexOf(img);
-    var card = document.createElement('div');
-    card.className = 'card'+(curView==='list'?' lc':'');
-    card.style.animationDelay = Math.min(i*28,500)+'ms';
-
-    if(curView==='grid'){
-      card.innerHTML =
+/* ================================================================
+   RENDER
+================================================================ */
+function redraw(){
+  var g=$('grid');
+  g.innerHTML='';
+  g.className=CUR_V==='list'?'lv':'';
+  var list=filtered();
+  $('rcnt').textContent=list.length+' image'+(list.length!==1?'s':'');
+  if(!list.length){g.innerHTML='<div class="mt"><div class="mt-icon">🔍</div><h3>No images match</h3><p>Try a different filter.</p></div>';return;}
+  list.forEach(function(img,i){
+    var gi=IMGS.indexOf(img);
+    var c=document.createElement('div');
+    c.className='card'+(CUR_V==='list'?' lc':'');
+    c.style.animationDelay=Math.min(i*26,480)+'ms';
+    if(CUR_V==='grid'){
+      c.innerHTML=
         '<img src="'+esc(img.src)+'" alt="'+esc(img.name)+'" loading="lazy" onerror="this.closest(\'.card\').style.display=\'none\'">'+
-        '<div class="cov">'+
-          '<button class="ovb pr" onclick="openLb(event,'+gi+')">🔍 Preview</button>'+
-          '<a class="ovb" href="'+esc(img.src)+'" target="_blank" rel="noopener">⬇ Save</a>'+
+        '<div class="card-ov">'+
+          '<button class="ob pr" onclick="openLb(event,'+gi+')">🔍 Preview</button>'+
+          '<a class="ob" href="'+esc(img.src)+'" target="_blank" rel="noopener">⬇ Save</a>'+
         '</div>'+
-        '<div class="cfoot">'+
-          '<div><div class="cname">'+esc(img.name)+'</div><div class="cdim">'+img.type.toUpperCase()+'</div></div>'+
-          '<span class="ctype">'+img.type.toUpperCase()+'</span>'+
-        '</div>';
-      card.addEventListener('click', function(e){
-        if(e.target.tagName==='A'||e.target.tagName==='BUTTON') return;
-        openLb(e, gi);
-      });
-    } else {
-      card.innerHTML =
+        '<div class="card-foot"><div><div class="cf-name">'+esc(img.name)+'</div></div><span class="cf-type">'+img.type.toUpperCase()+'</span></div>';
+      c.addEventListener('click',function(e){if(e.target.tagName==='A'||e.target.tagName==='BUTTON')return;openLb(e,gi);});
+    }else{
+      c.innerHTML=
         '<img src="'+esc(img.src)+'" alt="'+esc(img.name)+'" loading="lazy" onerror="this.closest(\'.card\').style.display=\'none\'" onclick="openLb(event,'+gi+')" style="cursor:pointer">'+
-        '<div class="cfoot">'+
-          '<div><div class="cname">'+esc(img.name)+'</div><div class="cdim">'+img.type.toUpperCase()+'</div></div>'+
-          '<span class="ctype">'+img.type.toUpperCase()+'</span>'+
-        '</div>'+
-        '<a class="lcdl" href="'+esc(img.src)+'" target="_blank" rel="noopener">⬇ Download</a>';
+        '<div class="card-foot"><div><div class="cf-name">'+esc(img.name)+'</div><div style="font-size:.63rem;color:var(--mu)">'+img.type.toUpperCase()+'</div></div><span class="cf-type">'+img.type.toUpperCase()+'</span></div>'+
+        '<a class="lca" href="'+esc(img.src)+'" target="_blank" rel="noopener">⬇</a>';
     }
-    grid.appendChild(card);
+    g.appendChild(c);
   });
 }
-
-function getFiltered(){
-  var imgs = allImgs.slice();
-  if(curFilter!=='all') imgs=imgs.filter(function(i){
-    var t=i.type.toLowerCase();
-    return curFilter==='jpg'?(t==='jpg'||t==='jpeg'):t===curFilter;
-  });
-  var s=el('ssort').value;
-  if(s==='name') imgs.sort(function(a,b){return a.name.localeCompare(b.name);});
-  else if(s==='type') imgs.sort(function(a,b){return a.type.localeCompare(b.type);});
-  return imgs;
+function filtered(){
+  var a=IMGS.slice();
+  if(CUR_F!=='all')a=a.filter(function(i){var t=i.type.toLowerCase();return CUR_F==='jpg'?(t==='jpg'||t==='jpeg'):t===CUR_F;});
+  var s=parseInt($('srt').value);
+  if(s===1)a.sort(function(x,y){return x.name.localeCompare(y.name);});
+  else if(s===2)a.sort(function(x,y){return x.type.localeCompare(y.type);});
+  return a;
 }
-
-function doFilter(f,btn){
-  curFilter=f;
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
-  btn.classList.add('on');
-  renderGrid();
-}
-function setView(v){
-  curView=v;
-  el('vbg').classList.toggle('on',v==='grid');
-  el('vbl').classList.toggle('on',v==='list');
-  renderGrid();
-}
+function filt(f,el){CUR_F=f;document.querySelectorAll('.ft').forEach(function(t){t.classList.remove('on');});el.classList.add('on');redraw();}
+function setV(v){CUR_V=v;$('vbg').classList.toggle('on',v==='grid');$('vbl').classList.toggle('on',v==='list');redraw();}
 function dlAll(){
-  var imgs=getFiltered();
-  if(!imgs.length){showToast('No images to download');return;}
-  showToast('⬇️ Starting '+imgs.length+' download'+(imgs.length!==1?'s':'')+'…');
-  imgs.forEach(function(img,i){
-    setTimeout(function(){
-      var a=document.createElement('a');
-      a.href=img.src; a.download=img.name; a.target='_blank'; a.rel='noopener';
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    },i*200);
-  });
+  var a=filtered();if(!a.length){toast('No images');return;}
+  toast('⬇️ Starting '+a.length+' download'+(a.length!==1?'s':'')+'…');
+  a.forEach(function(img,i){setTimeout(function(){var x=document.createElement('a');x.href=img.src;x.download=img.name;x.target='_blank';x.rel='noopener';document.body.appendChild(x);x.click();document.body.removeChild(x);},i*200);});
 }
 
-// ─────────────────────────────────────────────────────────────────
-// LIGHTBOX
-// ─────────────────────────────────────────────────────────────────
-function openLb(e,idx){
-  if(e) e.stopPropagation();
-  lbIdx=idx; renderLb();
-  el('lb').classList.add('open');
-  document.body.style.overflow='hidden';
-}
+/* ================================================================
+   LIGHTBOX
+================================================================ */
+function openLb(e,i){if(e)e.stopPropagation();LB_IDX=i;renderLb();$('lb').classList.add('open');document.body.style.overflow='hidden';}
 function renderLb(){
-  var img=allImgs[lbIdx]; if(!img) return;
-  el('lbimg').src=img.src;
-  el('lbinfo').textContent=img.src;
-  el('lbacts').innerHTML=
-    '<a class="lbbtn" href="'+esc(img.src)+'" target="_blank" rel="noopener">🔗 Open original</a>'+
-    '<a class="lbbtn" href="'+esc(img.src)+'" download="'+esc(img.name)+'" target="_blank" rel="noopener">⬇ Download</a>'+
-    '<button class="lbbtn" onclick="copyUrl(\''+esc(img.src)+'\')">📋 Copy URL</button>';
+  var img=IMGS[LB_IDX];if(!img)return;
+  $('lbi').src=img.src;$('lbu').textContent=img.src;
+  $('lba').innerHTML='<a class="lbb" href="'+esc(img.src)+'" target="_blank" rel="noopener">🔗 Open</a>'+
+    '<a class="lbb" href="'+esc(img.src)+'" download="'+esc(img.name)+'" target="_blank" rel="noopener">⬇ Download</a>'+
+    '<button class="lbb" onclick="cpurl(\''+esc(img.src)+'\')">📋 Copy URL</button>';
 }
-function lbNav(d){
-  if(!el('lb').classList.contains('open')) return;
-  var n=lbIdx+d;
-  if(n>=0&&n<allImgs.length){lbIdx=n;renderLb();}
-}
-function lbBgClick(e){if(e.target===el('lb')) closeLb();}
-function closeLb(){
-  el('lb').classList.remove('open');
-  el('lbimg').src='';
-  document.body.style.overflow='';
-}
-function copyUrl(txt){
-  navigator.clipboard.writeText(txt).then(function(){showToast('✅ Copied!');});
-}
+function lbNav(d){if(!$('lb').classList.contains('open'))return;var n=LB_IDX+d;if(n>=0&&n<IMGS.length){LB_IDX=n;renderLb();}}
+function lbBg(e){if(e.target===$('lb'))closeLb();}
+function closeLb(){$('lb').classList.remove('open');$('lbi').src='';document.body.style.overflow='';}
+function cpurl(t){navigator.clipboard.writeText(t).then(function(){toast('✅ Copied!');});}
 
-// ─────────────────────────────────────────────────────────────────
-// TOAST / RESET
-// ─────────────────────────────────────────────────────────────────
-function showToast(msg){
-  var d=document.createElement('div');
-  d.className='toast'; d.textContent=msg;
-  document.body.appendChild(d);
-  setTimeout(function(){d.remove();},3000);
-}
-function doReset(){
-  GEN++; // invalidate any running extraction
-  allImgs=[];
-  el('url-in').value='';
-  el('results-inner').classList.remove('show');
-  el('sbox').style.display='none';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
+/* ================================================================
+   TOAST / RESET
+================================================================ */
+function toast(m){var d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(function(){d.remove();},2800);}
+function doReset(){GEN++;IMGS=[];$('urlin').value='';$('results').classList.remove('open');$('term').style.display='none';window.scrollTo({top:0,behavior:'smooth'});}
 </script>
 </body>
 </html>
