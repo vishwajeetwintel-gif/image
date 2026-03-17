@@ -13,7 +13,7 @@
   --bd:#242436;--bd2:#2e2e44;
   --a1:#5b5eff;--a2:#ff4d6d;--a3:#00e5c3;--a4:#ffc340;
   --tx:#e6e6f0;--mu:#68688a;--mu2:#9898b4;
-  --r:12px;--r2:8px;
+  --r:12px;
 }
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden}
@@ -47,7 +47,6 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2rem,5.5vw,3.1r
 .ishell input::placeholder{color:var(--mu)}
 .btn-go{background:linear-gradient(135deg,var(--a1),#7c5cf6);color:#fff;border:none;border-radius:9px;padding:11px 22px;font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:opacity .2s,transform .15s;white-space:nowrap;display:flex;align-items:center;gap:7px}
 .btn-go:hover{opacity:.87;transform:translateY(-1px)}
-.btn-go:active{transform:translateY(0)}
 .btn-go:disabled{opacity:.4;cursor:not-allowed;transform:none}
 .hint{font-size:.74rem;color:var(--mu);margin-top:11px;text-align:center}
 .hint kbd{background:var(--s2);border:1px solid var(--bd);border-radius:4px;padding:1px 6px;font-family:'JetBrains Mono',monospace;font-size:.7rem}
@@ -70,9 +69,10 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2rem,5.5vw,3.1r
 .pw{margin-top:10px;height:3px;background:var(--s3);border-radius:99px;overflow:hidden}
 .pf{height:100%;background:linear-gradient(90deg,var(--a1),var(--a3));border-radius:99px;width:0%;transition:width .6s cubic-bezier(.4,0,.2,1)}
 
-/* RESULTS - uses visibility trick so layout never collapses */
-#rwrap{position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:0 24px 80px;visibility:hidden;min-height:0;max-height:0;overflow:hidden;pointer-events:none}
-#rwrap.shown{visibility:visible;min-height:unset;max-height:unset;overflow:visible;pointer-events:all}
+/* RESULTS — block always, content toggled inside */
+#rwrap{display:block;position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:0 24px 80px}
+#results-inner{display:none}
+#results-inner.show{display:block}
 .toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:11px;padding:13px 17px;background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:18px}
 .tbl{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
 .tbr{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
@@ -83,15 +83,13 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2rem,5.5vw,3.1r
 .tab:hover:not(.on){border-color:var(--a1);color:var(--tx)}
 .tab.on{background:var(--a1);border-color:var(--a1);color:#fff}
 .tsel{background:var(--s2);border:1px solid var(--bd);color:var(--tx);border-radius:7px;padding:5px 10px;font-size:.76rem;outline:none;cursor:pointer;font-family:'DM Sans',sans-serif}
-.tsel:focus{border-color:var(--a1)}
 .vt{display:flex;background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding:3px;gap:3px}
 .vb{background:none;border:none;color:var(--mu);cursor:pointer;padding:4px 8px;border-radius:5px;transition:all .2s;display:flex;align-items:center}
 .vb.on{background:var(--a1);color:#fff}
 .vb:hover:not(.on){color:var(--tx)}
-.btn-dla{background:linear-gradient(135deg,var(--a3),#00b89a);color:#070c0b;border:none;border-radius:7px;padding:7px 14px;font-family:'Syne',sans-serif;font-weight:700;font-size:.76rem;cursor:pointer;transition:opacity .2s,transform .15s;display:flex;align-items:center;gap:5px;white-space:nowrap}
-.btn-dla:hover{opacity:.85;transform:translateY(-1px)}
+.btn-dla{background:linear-gradient(135deg,var(--a3),#00b89a);color:#070c0b;border:none;border-radius:7px;padding:7px 14px;font-family:'Syne',sans-serif;font-weight:700;font-size:.76rem;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.btn-dla:hover{opacity:.85}
 
-/* GRID */
 #igrid{columns:4 240px;column-gap:12px}
 #igrid.lv{columns:1}
 .card{break-inside:avoid;background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:12px;overflow:hidden;cursor:pointer;position:relative;transition:transform .2s,box-shadow .2s,border-color .2s;animation:cIn .4s ease both}
@@ -104,38 +102,34 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2rem,5.5vw,3.1r
 .ctype{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;background:var(--s3);border:1px solid var(--bd2);color:var(--mu2);border-radius:5px;padding:2px 7px;flex-shrink:0}
 .cov{position:absolute;inset:0;background:rgba(8,8,14,.82);display:flex;align-items:center;justify-content:center;gap:9px;opacity:0;transition:opacity .2s;backdrop-filter:blur(4px)}
 .card:hover .cov{opacity:1}
-.ovb{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.17);color:#fff;border-radius:8px;padding:7px 12px;font-size:.76rem;font-weight:600;cursor:pointer;transition:background .2s,transform .15s;display:flex;align-items:center;gap:5px;text-decoration:none;font-family:'DM Sans',sans-serif}
-.ovb:hover{background:rgba(255,255,255,.18);transform:scale(1.05)}
+.ovb{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.17);color:#fff;border-radius:8px;padding:7px 12px;font-size:.76rem;font-weight:600;cursor:pointer;transition:background .2s;display:flex;align-items:center;gap:5px;text-decoration:none;font-family:'DM Sans',sans-serif}
+.ovb:hover{background:rgba(255,255,255,.2)}
 .ovb.pr{background:var(--a1);border-color:var(--a1)}
-.ovb.pr:hover{background:#7c7eff}
 .card.lc{display:flex;align-items:center;gap:14px;padding:10px;cursor:default}
 .card.lc:hover{transform:none;box-shadow:none;border-color:var(--bd2)}
 .card.lc img{width:90px;height:62px;flex-shrink:0;object-fit:cover;border-radius:7px;min-height:unset;max-height:unset;cursor:pointer}
 .card.lc .cfoot{flex:1;padding:0}
-.lcdl{background:var(--s3);border:1px solid var(--bd2);color:var(--tx);border-radius:7px;padding:6px 11px;font-size:.73rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:5px;flex-shrink:0;transition:background .2s,border-color .2s}
+.lcdl{background:var(--s3);border:1px solid var(--bd2);color:var(--tx);border-radius:7px;padding:6px 11px;font-size:.73rem;text-decoration:none;display:flex;align-items:center;gap:5px;flex-shrink:0;transition:background .2s}
 .lcdl:hover{background:var(--a1);border-color:var(--a1)}
 .empty{text-align:center;padding:80px 24px;color:var(--mu)}
 .empty .ei{font-size:2.6rem;margin-bottom:14px}
 .empty h3{font-family:'Syne',sans-serif;color:var(--tx);font-size:1.05rem;margin-bottom:7px}
 .empty p{font-size:.85rem;max-width:380px;margin:0 auto;line-height:1.7}
 
-/* LIGHTBOX */
 #lb{display:none;position:fixed;inset:0;background:rgba(4,4,10,.93);z-index:2000;backdrop-filter:blur(14px);align-items:center;justify-content:center}
-#lb.open{display:flex;animation:lfi .2s ease}
-@keyframes lfi{from{opacity:0}to{opacity:1}}
+#lb.open{display:flex}
 .lbw{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;max-width:92vw}
 .lbw img{max-width:90vw;max-height:72vh;object-fit:contain;border-radius:var(--r);box-shadow:0 28px 80px rgba(0,0,0,.9)}
-.lbx{position:absolute;top:-13px;right:-13px;background:var(--s1);border:1px solid var(--bd2);color:var(--tx);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.85rem;z-index:1;transition:background .2s}
-.lbx:hover{background:var(--s3)}
+.lbx{position:absolute;top:-13px;right:-13px;background:var(--s1);border:1px solid var(--bd2);color:var(--tx);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.85rem;z-index:1}
 .lbacts{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}
-.lbbtn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);color:var(--tx);border-radius:8px;padding:7px 14px;font-size:.8rem;font-weight:500;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:5px;transition:background .2s;font-family:'DM Sans',sans-serif}
-.lbbtn:hover{background:rgba(255,255,255,.15)}
+.lbbtn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);color:var(--tx);border-radius:8px;padding:7px 14px;font-size:.8rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:5px;transition:background .2s;font-family:'DM Sans',sans-serif}
+.lbbtn:hover{background:rgba(255,255,255,.18)}
 .lbinfo{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--mu);text-align:center;max-width:500px;word-break:break-all}
-.lbnav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;transition:background .2s}
-.lbnav:hover{background:rgba(255,255,255,.14)}
+.lbnav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem}
+.lbnav:hover{background:rgba(255,255,255,.18)}
 .lbprev{left:-58px}.lbnext{right:-58px}
 
-.toast{position:fixed;bottom:26px;right:26px;background:var(--s1);border:1px solid var(--bd2);color:var(--tx);padding:10px 17px;border-radius:var(--r2);font-size:.82rem;z-index:9998;box-shadow:0 8px 28px rgba(0,0,0,.5);display:flex;align-items:center;gap:7px;animation:ti .3s ease}
+.toast{position:fixed;bottom:26px;right:26px;background:var(--s1);border:1px solid var(--bd2);color:var(--tx);padding:10px 17px;border-radius:8px;font-size:.82rem;z-index:9998;box-shadow:0 8px 28px rgba(0,0,0,.5);display:flex;align-items:center;gap:7px;animation:ti .3s ease}
 @keyframes ti{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 .feats{position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:13px;max-width:940px;margin:0 auto;padding:60px 24px 20px}
@@ -188,7 +182,6 @@ footer a:hover{color:var(--tx)}
   <p class="hint">Press <kbd>Enter</kbd> to start &nbsp;·&nbsp; Works on any public URL</p>
 </section>
 
-<!-- TERMINAL -->
 <div id="sbox">
   <div class="th">
     <div class="tdot td1"></div><div class="tdot td2"></div><div class="tdot td3"></div>
@@ -205,43 +198,45 @@ footer a:hover{color:var(--tx)}
   </div>
 </div>
 
-<!-- RESULTS -->
+<!-- #rwrap is ALWAYS display:block. Only #results-inner toggles -->
 <div id="rwrap">
-  <div class="toolbar">
-    <div class="tbl">
-      <span class="rcnt" id="rcnt">0 images</span>
-      <span class="rhost" id="rhost"></span>
-      <div class="tabs">
-        <button class="tab on" data-f="all"  onclick="doFilter('all',this)">All</button>
-        <button class="tab"    data-f="jpg"  onclick="doFilter('jpg',this)">JPG</button>
-        <button class="tab"    data-f="png"  onclick="doFilter('png',this)">PNG</button>
-        <button class="tab"    data-f="gif"  onclick="doFilter('gif',this)">GIF</button>
-        <button class="tab"    data-f="svg"  onclick="doFilter('svg',this)">SVG</button>
-        <button class="tab"    data-f="webp" onclick="doFilter('webp',this)">WebP</button>
-        <button class="tab"    data-f="avif" onclick="doFilter('avif',this)">AVIF</button>
+  <div id="results-inner">
+    <div class="toolbar">
+      <div class="tbl">
+        <span class="rcnt" id="rcnt">0 images</span>
+        <span class="rhost" id="rhost"></span>
+        <div class="tabs">
+          <button class="tab on" data-f="all"  onclick="doFilter('all',this)">All</button>
+          <button class="tab"    data-f="jpg"  onclick="doFilter('jpg',this)">JPG</button>
+          <button class="tab"    data-f="png"  onclick="doFilter('png',this)">PNG</button>
+          <button class="tab"    data-f="gif"  onclick="doFilter('gif',this)">GIF</button>
+          <button class="tab"    data-f="svg"  onclick="doFilter('svg',this)">SVG</button>
+          <button class="tab"    data-f="webp" onclick="doFilter('webp',this)">WebP</button>
+          <button class="tab"    data-f="avif" onclick="doFilter('avif',this)">AVIF</button>
+        </div>
+      </div>
+      <div class="tbr">
+        <select class="tsel" id="ssort" onchange="renderGrid()">
+          <option value="default">Default order</option>
+          <option value="name">Sort by name</option>
+          <option value="type">Sort by type</option>
+        </select>
+        <div class="vt">
+          <button class="vb on" id="vbg" onclick="setView('grid')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          </button>
+          <button class="vb" id="vbl" onclick="setView('list')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="9" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1.5" fill="currentColor" stroke="none"/></svg>
+          </button>
+        </div>
+        <button class="btn-dla" onclick="dlAll()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download All
+        </button>
       </div>
     </div>
-    <div class="tbr">
-      <select class="tsel" id="ssort" onchange="renderGrid()">
-        <option value="default">Default order</option>
-        <option value="name">Sort by name</option>
-        <option value="type">Sort by type</option>
-      </select>
-      <div class="vt">
-        <button class="vb on" id="vbg" onclick="setView('grid')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-        </button>
-        <button class="vb" id="vbl" onclick="setView('list')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="9" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1.5" fill="currentColor" stroke="none"/></svg>
-        </button>
-      </div>
-      <button class="btn-dla" onclick="dlAll()">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Download All
-      </button>
-    </div>
+    <div id="igrid"></div>
   </div>
-  <div id="igrid"></div>
 </div>
 
 <section id="how" style="position:relative;z-index:1;max-width:820px;margin:0 auto;padding:60px 24px 10px;text-align:center">
@@ -255,15 +250,14 @@ footer a:hover{color:var(--tx)}
 </section>
 
 <div class="feats" id="features">
-  <div class="fc"><div class="fi fi1">⚡</div><h3>No API Key</h3><p>100% free. Uses public CORS proxies — no sign-up required.</p></div>
-  <div class="fc"><div class="fi fi2">🎯</div><h3>Deep Extraction</h3><p>img src, srcset, picture, CSS url(), og:image, data-src lazy-load &amp; more.</p></div>
-  <div class="fc"><div class="fi fi3">🔧</div><h3>Smart Filters</h3><p>Filter by JPG, PNG, GIF, SVG, WebP, AVIF. Grid and list view.</p></div>
-  <div class="fc"><div class="fi fi4">📦</div><h3>Bulk Download</h3><p>Download all visible images at once with one click.</p></div>
+  <div class="fc"><div class="fi fi1">⚡</div><h3>No API Key</h3><p>100% free. Uses public CORS proxies.</p></div>
+  <div class="fc"><div class="fi fi2">🎯</div><h3>Deep Extraction</h3><p>img src, srcset, CSS url(), og:image, data-src lazy-load &amp; more.</p></div>
+  <div class="fc"><div class="fi fi3">🔧</div><h3>Smart Filters</h3><p>Filter by JPG, PNG, GIF, SVG, WebP, AVIF.</p></div>
+  <div class="fc"><div class="fi fi4">📦</div><h3>Bulk Download</h3><p>Download all visible images with one click.</p></div>
 </div>
 
-<footer><p>© 2025 extract.pics &nbsp;·&nbsp; Free image extractor &nbsp;·&nbsp; <a href="#">Privacy</a> &nbsp;·&nbsp; <a href="#">Terms</a></p></footer>
+<footer><p>© 2025 extract.pics &nbsp;·&nbsp; <a href="#">Privacy</a> &nbsp;·&nbsp; <a href="#">Terms</a></p></footer>
 
-<!-- LIGHTBOX -->
 <div id="lb" onclick="lbBgClick(event)">
   <div class="lbw">
     <button class="lbx" onclick="closeLb()">✕</button>
@@ -276,456 +270,474 @@ footer a:hover{color:var(--tx)}
 </div>
 
 <script>
-/* ============================================================
-   STATE
-   ============================================================ */
-let allImgs   = [];
-let curFilter = 'all';
-let curView   = 'grid';
-let lbIdx     = 0;
+// ─────────────────────────────────────────────────────────────────
+// THE KEY FIX: We use a simple integer "generation" counter.
+// Every new extract run increments it. Every callback checks if
+// its generation still matches the current one before doing anything.
+// This means stale callbacks from failed proxies are COMPLETELY
+// ignored — they can never touch the DOM.
+// ─────────────────────────────────────────────────────────────────
 
-// ── CRITICAL: once TRUE, nothing can hide or clear #rwrap ──
-let resultsLocked = false;
+var GEN = 0;          // current generation
+var allImgs   = [];
+var curFilter = 'all';
+var curView   = 'grid';
+var lbIdx     = 0;
 
-/* ============================================================
-   BOOT
-   ============================================================ */
-document.getElementById('url-in').addEventListener('keydown', e => {
-  if (e.key === 'Enter') startExtract();
+// ── DOM shortcuts ──
+function el(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── keyboard ──
+el('url-in').addEventListener('keydown', function(e){ if(e.key==='Enter') startExtract(); });
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape')     closeLb();
+  if(e.key==='ArrowLeft')  lbNav(-1);
+  if(e.key==='ArrowRight') lbNav(+1);
 });
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape')     closeLb();
-  if (e.key === 'ArrowLeft')  lbNav(-1);
-  if (e.key === 'ArrowRight') lbNav(+1);
-});
 
-/* ============================================================
-   SAFE DOM HELPERS — never touch rwrap unless allowed
-   ============================================================ */
-function $(id) { return document.getElementById(id); }
-function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
-function esc(s) {
-  return String(s)
-    .replace(/&/g,'&amp;').replace(/"/g,'&quot;')
-    .replace(/</g,'&lt;').replace(/>/g,'&gt;');
+// ── terminal helpers ──
+function slVis(id){ el(id).classList.add('vis'); }
+function slAct(id){ el(id).classList.add('vis','act'); }
+function slDone(id){ el(id).classList.remove('act'); el(id).classList.add('done'); }
+function allStepsDone(){ ['sl0','sl1','sl2','sl3','sl4'].forEach(slDone); }
+function setProg(p,c){
+  var pf=el('pf'); pf.style.width=p+'%';
+  if(c) pf.style.background=c;
 }
 
-// Show results section — ONLY called on success, sets lock
-function showRwrap() {
-  resultsLocked = true;
-  $('rwrap').classList.add('shown');
-}
-
-// Hide results — ONLY allowed if lock is not set
-function hideRwrap() {
-  if (resultsLocked) return;   // ← GUARD: cannot hide after success
-  $('rwrap').classList.remove('shown');
-}
-
-/* ============================================================
-   TERMINAL HELPERS
-   ============================================================ */
-function slVis(id)  { $(id).classList.add('vis'); }
-function slAct(id)  { $(id).classList.add('vis','act'); }
-function slDone(id) { $(id).classList.remove('act'); $(id).classList.add('done'); }
-function allDone()  { ['sl0','sl1','sl2','sl3','sl4'].forEach(slDone); }
-function setProg(p, c) {
-  const pf = $('pf');
-  pf.style.width = p + '%';
-  if (c) pf.style.background = c;
-}
-
-/* ============================================================
-   FETCH  — tries proxies one at a time, returns on first success
-   ============================================================ */
-async function fetchPage(url) {
-  const proxies = [
-    ['allorigins', async () => {
-      const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}&t=${Date.now()}`,
-        { signal: AbortSignal.timeout(15000) });
-      if (!r.ok) throw new Error(r.status);
-      const j = await r.json();
-      if (!j.contents || j.contents.length < 200) throw new Error('empty');
-      return j.contents;
-    }],
-    ['corsproxy.io', async () => {
-      const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`,
-        { signal: AbortSignal.timeout(15000) });
-      if (!r.ok) throw new Error(r.status);
-      const t = await r.text();
-      if (!t || t.length < 200) throw new Error('empty');
-      return t;
-    }],
-    ['codetabs', async () => {
-      const r = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-        { signal: AbortSignal.timeout(15000) });
-      if (!r.ok) throw new Error(r.status);
-      const t = await r.text();
-      if (!t || t.length < 200) throw new Error('empty');
-      return t;
-    }],
-    ['htmldriven', async () => {
-      const r = await fetch(`https://cors-anywhere.herokuapp.com/${url}`,
-        { headers:{'X-Requested-With':'XMLHttpRequest'}, signal: AbortSignal.timeout(15000) });
-      if (!r.ok) throw new Error(r.status);
-      const t = await r.text();
-      if (!t || t.length < 200) throw new Error('empty');
-      return t;
-    }],
+// ─────────────────────────────────────────────────────────────────
+// FETCH — uses XMLHttpRequest so we have zero unhandled promise
+// rejections. Each proxy is tried sequentially via callbacks.
+// gen = the generation this call belongs to.
+// onSuccess(html, proxyName) / onFail(errorMsg)
+// ─────────────────────────────────────────────────────────────────
+function fetchWithProxies(url, gen, onSuccess, onFail){
+  var proxies = [
+    {
+      name: 'allorigins',
+      url: 'https://api.allorigins.win/get?url='+encodeURIComponent(url)+'&t='+Date.now(),
+      parse: function(text){
+        var j = JSON.parse(text);
+        if(!j.contents || j.contents.length < 100) throw new Error('empty');
+        return j.contents;
+      }
+    },
+    {
+      name: 'corsproxy.io',
+      url: 'https://corsproxy.io/?'+encodeURIComponent(url),
+      parse: function(text){
+        if(!text || text.length < 100) throw new Error('empty');
+        return text;
+      }
+    },
+    {
+      name: 'codetabs',
+      url: 'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(url),
+      parse: function(text){
+        if(!text || text.length < 100) throw new Error('empty');
+        return text;
+      }
+    }
   ];
 
-  const errs = [];
-  for (const [name, fn] of proxies) {
-    try {
-      const html = await fn();
-      return { html, proxy: name };   // ← return immediately on success
-    } catch(e) {
-      errs.push(`${name}:${e.message}`);
+  var idx = 0;
+
+  function tryNext(){
+    // Stale generation? Stop immediately, touch nothing.
+    if(GEN !== gen) return;
+
+    if(idx >= proxies.length){
+      if(GEN === gen) onFail('All proxies failed. Host on GitHub Pages for best results.');
+      return;
     }
+
+    var proxy = proxies[idx++];
+    var xhr = new XMLHttpRequest();
+    xhr.timeout = 15000;
+
+    xhr.onload = function(){
+      // Stale? Ignore completely.
+      if(GEN !== gen) return;
+      if(xhr.status >= 200 && xhr.status < 300){
+        try{
+          var html = proxy.parse(xhr.responseText);
+          onSuccess(html, proxy.name);   // ← SUCCESS: done
+        } catch(e){
+          tryNext();  // parse failed, try next proxy
+        }
+      } else {
+        tryNext();  // HTTP error, try next proxy
+      }
+    };
+
+    xhr.onerror   = function(){ if(GEN===gen) tryNext(); };
+    xhr.ontimeout = function(){ if(GEN===gen) tryNext(); };
+
+    xhr.open('GET', proxy.url, true);
+    xhr.send();
   }
-  throw new Error('All proxies failed. Host on GitHub Pages for best results.');
+
+  tryNext();
 }
 
-/* ============================================================
-   MAIN EXTRACT
-   ============================================================ */
-async function startExtract() {
-  let raw = $('url-in').value.trim();
-  if (!raw) { showToast('⚠️ Please enter a URL'); return; }
-  if (!/^https?:\/\//i.test(raw)) raw = 'https://' + raw;
-  try { new URL(raw); } catch { showToast('⚠️ Invalid URL'); return; }
+// ─────────────────────────────────────────────────────────────────
+// MAIN EXTRACT
+// ─────────────────────────────────────────────────────────────────
+function startExtract(){
+  var raw = el('url-in').value.trim();
+  if(!raw){ showToast('⚠️ Please enter a URL'); return; }
+  if(!/^https?:\/\//i.test(raw)) raw = 'https://'+raw;
+  try{ new URL(raw); } catch(e){ showToast('⚠️ Invalid URL'); return; }
 
-  // Disable button during run
-  $('btn-go').disabled = true;
+  // ── Increment generation — all previous callbacks become stale ──
+  GEN++;
+  var myGen = GEN;
 
-  // Reset lock & images for this new run
-  resultsLocked = false;
+  el('btn-go').disabled = true;
   allImgs = [];
 
-  // Hide results (only works because lock is false right now)
-  hideRwrap();
+  // Hide results
+  el('results-inner').classList.remove('show');
 
-  // Show & reset terminal
-  $('sbox').style.display = 'block';
-  ['sl0','sl1','sl2','sl3','sl4','sl5'].forEach(id => $(id).className = 'sl');
-  const pf = $('pf');
+  // Reset & show terminal
+  el('sbox').style.display = 'block';
+  ['sl0','sl1','sl2','sl3','sl4','sl5'].forEach(function(id){ el(id).className='sl'; });
+  var pf = el('pf');
   pf.style.transition = 'none';
   pf.style.width = '0%';
   pf.style.background = 'linear-gradient(90deg,var(--a1),var(--a3))';
   void pf.offsetHeight;
   pf.style.transition = 'width .6s cubic-bezier(.4,0,.2,1)';
-  $('ttitle').textContent = new URL(raw).hostname + ' — browser session';
-  $('sbox').scrollIntoView({ behavior:'smooth', block:'center' });
+  el('ttitle').textContent = new URL(raw).hostname + ' — browser session';
+  el('sbox').scrollIntoView({behavior:'smooth',block:'center'});
 
-  try {
-    // Step 0
-    slAct('sl0'); setProg(8);
-    await wait(500);
+  // Step 0
+  slAct('sl0'); setProg(8);
 
-    // Step 1 — fetch
+  setTimeout(function(){
+    if(GEN!==myGen) return;
+    // Step 1
     slDone('sl0'); slAct('sl1'); setProg(25);
-    $('sl1t').textContent = `Loading page... (${new URL(raw).hostname})`;
-    const { html, proxy } = await fetchPage(raw);
+    el('sl1t').textContent = 'Loading page... ('+new URL(raw).hostname+')';
 
-    // Step 2
-    slDone('sl1'); slAct('sl2'); setProg(45);
-    $('sl2t').textContent = `Scrolling down... (via ${proxy})`;
-    await wait(600);
+    fetchWithProxies(raw, myGen,
 
-    // Step 3
-    slDone('sl2'); slAct('sl3'); setProg(65);
-    const imgs = extractImages(html, raw);
-    $('sl3t').textContent = `Finding images... (${imgs.length} found)`;
-    await wait(500);
+      // ── SUCCESS CALLBACK ──────────────────────────────────────
+      function(html, proxyName){
+        if(GEN!==myGen) return;  // double-check generation
 
-    // Step 4
-    slDone('sl3'); slAct('sl4'); setProg(85);
-    $('sl4t').textContent = `Analyzing images... deduplicating`;
-    await wait(400);
+        // Step 2
+        slDone('sl1'); slAct('sl2'); setProg(45);
+        el('sl2t').textContent = 'Scrolling down... (via '+proxyName+')';
 
-    // Step 5
-    allDone();
-    setProg(100);
-    slVis('sl5');
+        setTimeout(function(){
+          if(GEN!==myGen) return;
 
-    if (imgs.length > 0) {
-      allImgs = imgs;
-      $('sl5').classList.add('act');
-      $('sl5t').textContent = `Done! Found ${imgs.length} image${imgs.length!==1?'s':''}`;
-      await wait(500);
-      slDone('sl5');
+          // Step 3
+          slDone('sl2'); slAct('sl3'); setProg(65);
+          var imgs = extractImages(html, raw);
+          el('sl3t').textContent = 'Finding images... ('+imgs.length+' found)';
 
-      // ── COMMIT: build grid, lock results, show ──
-      curFilter = 'all';
-      document.querySelectorAll('.tab').forEach(t =>
-        t.classList.toggle('on', t.dataset.f === 'all')
-      );
-      $('rhost').textContent = new URL(raw).hostname;
-      renderGrid();           // build DOM first
-      showRwrap();            // LOCK & show — nothing can undo this
-      $('rwrap').scrollIntoView({ behavior:'smooth' });
+          setTimeout(function(){
+            if(GEN!==myGen) return;
 
-    } else {
-      $('sl5').querySelector('.sli').textContent = '⚠️';
-      $('sl5t').textContent = 'No images found on this page.';
-      await wait(300);
-      showErrorGrid('No images found. The site may use JavaScript to load images. Try a static page.');
-    }
+            // Step 4
+            slDone('sl3'); slAct('sl4'); setProg(85);
+            el('sl4t').textContent = 'Analyzing images... deduplicating';
 
-  } catch(err) {
-    allDone();
-    setProg(100, 'linear-gradient(90deg,var(--a2),#ff7896)');
-    $('sl5').querySelector('.sli').textContent = '❌';
-    slVis('sl5');
-    $('sl5t').textContent = 'Failed: ' + String(err.message).slice(0, 80);
-    await wait(300);
-    showErrorGrid(String(err.message));
-  }
+            setTimeout(function(){
+              if(GEN!==myGen) return;
 
-  $('btn-go').disabled = false;
+              // Step 5
+              allStepsDone();
+              setProg(100);
+              slVis('sl5');
+
+              if(imgs.length > 0){
+                allImgs = imgs;
+                el('sl5').classList.add('act');
+                el('sl5t').textContent = 'Done! Found '+imgs.length+' image'+(imgs.length!==1?'s':'');
+
+                // Build grid BEFORE showing
+                curFilter = 'all';
+                document.querySelectorAll('.tab').forEach(function(t){
+                  t.classList.toggle('on', t.dataset.f==='all');
+                });
+                el('rhost').textContent = new URL(raw).hostname;
+                renderGrid();
+
+                // Show — this is the FINAL step, nothing after this
+                el('results-inner').classList.add('show');
+                el('results-inner').scrollIntoView({behavior:'smooth'});
+
+                setTimeout(function(){
+                  if(GEN===myGen){ slDone('sl5'); }
+                  el('btn-go').disabled = false;
+                }, 600);
+
+              } else {
+                el('sl5').querySelector('.sli').textContent = '⚠️';
+                el('sl5t').textContent = 'No images found on this page.';
+                el('igrid').innerHTML = '<div class="empty"><div class="ei">🔍</div><h3>No images found</h3><p>The site may load images via JavaScript. Try hosting on GitHub Pages for better results.</p></div>';
+                el('rcnt').textContent = '0 images';
+                el('rhost').textContent = new URL(raw).hostname;
+                el('results-inner').classList.add('show');
+                el('btn-go').disabled = false;
+              }
+
+            }, 400);
+          }, 500);
+        }, 600);
+      },
+
+      // ── FAIL CALLBACK ─────────────────────────────────────────
+      function(errMsg){
+        if(GEN!==myGen) return;  // stale, ignore
+
+        allStepsDone();
+        setProg(100,'linear-gradient(90deg,var(--a2),#ff7896)');
+        el('sl5').querySelector('.sli').textContent = '❌';
+        slVis('sl5');
+        el('sl5t').textContent = 'Failed: '+String(errMsg).slice(0,80);
+
+        el('igrid').innerHTML = '<div class="empty"><div class="ei">⚠️</div><h3>Could not fetch page</h3><p>'+esc(String(errMsg))+'</p></div>';
+        el('rcnt').textContent = '0 images';
+        el('rhost').textContent = '';
+        el('results-inner').classList.add('show');
+        el('btn-go').disabled = false;
+      }
+    );
+
+  }, 600);
 }
 
-function showErrorGrid(msg) {
-  $('rhost').textContent = '';
-  $('rcnt').textContent  = '0 images';
-  $('igrid').innerHTML   = `<div class="empty"><div class="ei">⚠️</div><h3>Could not extract images</h3><p>${esc(msg)}</p></div>`;
-  // Show without locking — so next run can clear it
-  $('rwrap').classList.add('shown');
-  $('rwrap').scrollIntoView({ behavior:'smooth' });
-}
+// ─────────────────────────────────────────────────────────────────
+// IMAGE EXTRACTION
+// ─────────────────────────────────────────────────────────────────
+function extractImages(html, pageUrl){
+  var base = new URL(pageUrl);
+  var seen = new Set();
+  var out  = [];
 
-/* ============================================================
-   IMAGE EXTRACTION
-   ============================================================ */
-function extractImages(html, pageUrl) {
-  const base = new URL(pageUrl);
-  const seen = new Set();
-  const out  = [];
-
-  function toAbs(src) {
-    if (!src) return null;
+  function toAbs(src){
+    if(!src) return null;
     src = src.trim().replace(/^['"`]|['"`]$/g,'').trim();
-    if (!src || src.startsWith('data:') || src.length < 4) return null;
-    try {
-      if (/^https?:\/\//i.test(src)) return src;
-      if (src.startsWith('//'))      return base.protocol + src;
-      if (src.startsWith('/'))       return base.origin + src;
+    if(!src || src.startsWith('data:') || src.length < 4) return null;
+    try{
+      if(/^https?:\/\//i.test(src)) return src;
+      if(src.startsWith('//'))      return base.protocol+src;
+      if(src.startsWith('/'))       return base.origin+src;
       return new URL(src, pageUrl).href;
-    } catch { return null; }
+    } catch(e){ return null; }
   }
 
-  function add(src) {
-    const u = toAbs(src);
-    if (!u) return;
-    const lo = u.toLowerCase();
-    const hasExt  = /\.(jpe?g|png|gif|webp|svg|avif|bmp|ico|tiff?)(\?|#|$)/i.test(lo);
-    const hasPath = /\/(image|img|photo|picture|thumb|asset|media|upload|static|cdn|file)/i.test(lo);
-    if (!hasExt && !hasPath) return;
-    const key = u.split('?')[0].split('#')[0];
-    if (seen.has(key)) return;
+  function add(src){
+    var u = toAbs(src);
+    if(!u) return;
+    var lo = u.toLowerCase();
+    var hasExt  = /\.(jpe?g|png|gif|webp|svg|avif|bmp|ico|tiff?)(\?|#|$)/i.test(lo);
+    var hasPath = /\/(image|img|photo|picture|thumb|asset|media|upload|static|cdn|file)/i.test(lo);
+    if(!hasExt && !hasPath) return;
+    var key = u.split('?')[0].split('#')[0];
+    if(seen.has(key)) return;
     seen.add(key);
-    out.push({ src: u, type: getExt(u), name: getFilename(u) });
+    out.push({src:u, type:getExt(u), name:getFilename(u)});
   }
 
-  let m;
-  // 1. <img> all lazy-load variants
-  const imgRe = /<img([^>]{0,3000})>/gi;
-  while ((m = imgRe.exec(html)) !== null) {
-    const a = m[1];
-    ['src','data-src','data-lazy-src','data-original','data-url',
-     'data-img','data-image','data-hi-res','data-lazy','data-echo'].forEach(attr => {
-      const r = a.match(new RegExp(attr + '\\s*=\\s*["\']([^"\'\\s>]+)','i'));
-      if (r) add(r[1]);
+  var m;
+  // 1. img tags
+  var imgRe = /<img([^>]{0,3000})>/gi;
+  while((m=imgRe.exec(html))!==null){
+    var a=m[1];
+    ['src','data-src','data-lazy-src','data-original','data-url','data-img','data-image','data-lazy','data-echo'].forEach(function(attr){
+      var r=a.match(new RegExp(attr+'\\s*=\\s*["\']([^"\'\\s>]+)','i'));
+      if(r) add(r[1]);
     });
-    ['srcset','data-srcset','data-lazy-srcset'].forEach(attr => {
-      const r = a.match(new RegExp(attr + '\\s*=\\s*["\']([^"\']+)','i'));
-      if (r) r[1].split(',').forEach(s => add(s.trim().split(/\s+/)[0]));
+    ['srcset','data-srcset'].forEach(function(attr){
+      var r=a.match(new RegExp(attr+'\\s*=\\s*["\']([^"\']+)','i'));
+      if(r) r[1].split(',').forEach(function(s){ add(s.trim().split(/\s+/)[0]); });
     });
   }
-  // 2. <source>
-  const srcRe = /<source([^>]{0,1000})>/gi;
-  while ((m = srcRe.exec(html)) !== null) {
-    const ss = m[1].match(/srcset\s*=\s*["']([^"']+)/i);
-    if (ss) ss[1].split(',').forEach(s => add(s.trim().split(/\s+/)[0]));
-    const sr = m[1].match(/\bsrc\s*=\s*["']([^"']+)/i);
-    if (sr) add(sr[1]);
+  // 2. source tags
+  var srcRe = /<source([^>]{0,1000})>/gi;
+  while((m=srcRe.exec(html))!==null){
+    var ss=m[1].match(/srcset\s*=\s*["']([^"']+)/i);
+    if(ss) ss[1].split(',').forEach(function(s){ add(s.trim().split(/\s+/)[0]); });
+    var sr=m[1].match(/\bsrc\s*=\s*["']([^"']+)/i);
+    if(sr) add(sr[1]);
   }
   // 3. CSS url()
-  const cssRe = /url\(\s*["']?([^"')\s]+)["']?\s*\)/gi;
-  while ((m = cssRe.exec(html)) !== null) add(m[1]);
+  var cssRe=/url\(\s*["']?([^"')\s]+)["']?\s*\)/gi;
+  while((m=cssRe.exec(html))!==null) add(m[1]);
   // 4. og/twitter meta
-  const metaRe = /<meta[^>]{0,600}>/gi;
-  while ((m = metaRe.exec(html)) !== null) {
-    if (/(og:image|twitter:image|image_src)/i.test(m[0])) {
-      const c = m[0].match(/content\s*=\s*["']([^"']+)/i);
-      if (c) add(c[1]);
+  var metaRe=/<meta[^>]{0,600}>/gi;
+  while((m=metaRe.exec(html))!==null){
+    if(/(og:image|twitter:image)/i.test(m[0])){
+      var c=m[0].match(/content\s*=\s*["']([^"']+)/i);
+      if(c) add(c[1]);
     }
   }
-  // 5. <a href> to image files
-  const aRe = /<a[^>]{0,500}href\s*=\s*["']([^"']+\.(?:jpe?g|png|gif|webp|svg|avif|bmp))(\?[^"']*)?["']/gi;
-  while ((m = aRe.exec(html)) !== null) add(m[1]+(m[2]||''));
-  // 6. JS/JSON string literals
-  const jsRe = /["'`](https?:\/\/[^"'`\s]{8,}\.(jpe?g|png|gif|webp|svg|avif|bmp|ico))["'`]/gi;
-  while ((m = jsRe.exec(html)) !== null) add(m[1]);
+  // 5. a href to images
+  var aRe=/<a[^>]{0,500}href\s*=\s*["']([^"']+\.(?:jpe?g|png|gif|webp|svg|avif|bmp))(\?[^"']*)?["']/gi;
+  while((m=aRe.exec(html))!==null) add(m[1]+(m[2]||''));
+  // 6. JS string literals
+  var jsRe=/["'`](https?:\/\/[^"'`\s]{8,}\.(jpe?g|png|gif|webp|svg|avif|bmp|ico))["'`]/gi;
+  while((m=jsRe.exec(html))!==null) add(m[1]);
   // 7. data-bg
-  const bgRe = /data-(?:bg|background(?:-image)?)\s*=\s*["']?(https?:\/\/[^"'\s>]+)/gi;
-  while ((m = bgRe.exec(html)) !== null) add(m[1]);
+  var bgRe=/data-(?:bg|background)\s*=\s*["']?(https?:\/\/[^"'\s>]+)/gi;
+  while((m=bgRe.exec(html))!==null) add(m[1]);
   // 8. video poster
-  const vidRe = /<video[^>]{0,400}poster\s*=\s*["']([^"']+)/gi;
-  while ((m = vidRe.exec(html)) !== null) add(m[1]);
+  var vidRe=/<video[^>]{0,400}poster\s*=\s*["']([^"']+)/gi;
+  while((m=vidRe.exec(html))!==null) add(m[1]);
 
   return out;
 }
 
-function getExt(url) {
-  try { const m = new URL(url).pathname.match(/\.([a-zA-Z0-9]+)$/); return m?m[1].toLowerCase().replace('jpeg','jpg'):'img'; }
-  catch { return 'img'; }
+function getExt(url){
+  try{ var m=new URL(url).pathname.match(/\.([a-zA-Z0-9]+)$/); return m?m[1].toLowerCase().replace('jpeg','jpg'):'img'; }
+  catch(e){ return 'img'; }
 }
-function getFilename(url) {
-  try { return decodeURIComponent(new URL(url).pathname.split('/').filter(Boolean).pop())||'image'; }
-  catch { return 'image'; }
+function getFilename(url){
+  try{ return decodeURIComponent(new URL(url).pathname.split('/').filter(Boolean).pop())||'image'; }
+  catch(e){ return 'image'; }
 }
 
-/* ============================================================
-   RENDER GRID
-   ============================================================ */
-function renderGrid() {
-  const grid = $('igrid');
+// ─────────────────────────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────────────────────────
+function renderGrid(){
+  var grid = el('igrid');
   grid.innerHTML = '';
-  grid.className = curView === 'list' ? 'lv' : '';
-  const filtered = getFiltered();
-  $('rcnt').textContent = `${filtered.length} image${filtered.length!==1?'s':''}`;
+  grid.className = curView==='list' ? 'lv' : '';
+  var filtered = getFiltered();
+  el('rcnt').textContent = filtered.length+' image'+(filtered.length!==1?'s':'');
 
-  if (!filtered.length) {
-    grid.innerHTML = `<div class="empty"><div class="ei">🔍</div><h3>No images match</h3><p>Try a different filter.</p></div>`;
+  if(!filtered.length){
+    grid.innerHTML='<div class="empty"><div class="ei">🔍</div><h3>No images match</h3><p>Try a different filter.</p></div>';
     return;
   }
 
-  filtered.forEach((img, i) => {
-    const gi = allImgs.indexOf(img);
-    const card = document.createElement('div');
-    card.className = 'card' + (curView==='list' ? ' lc' : '');
-    card.style.animationDelay = Math.min(i * 28, 500) + 'ms';
-    if (curView === 'grid') {
-      card.innerHTML = `
-        <img src="${esc(img.src)}" alt="${esc(img.name)}" loading="lazy"
-             onerror="this.closest('.card').style.display='none'">
-        <div class="cov">
-          <button class="ovb pr" onclick="openLb(event,${gi})">🔍 Preview</button>
-          <a class="ovb" href="${esc(img.src)}" target="_blank" rel="noopener">⬇ Save</a>
-        </div>
-        <div class="cfoot">
-          <div><div class="cname">${esc(img.name)}</div><div class="cdim">${img.type.toUpperCase()}</div></div>
-          <span class="ctype">${img.type.toUpperCase()}</span>
-        </div>`;
-      card.addEventListener('click', e => {
-        if (e.target.tagName==='A'||e.target.tagName==='BUTTON') return;
+  filtered.forEach(function(img, i){
+    var gi = allImgs.indexOf(img);
+    var card = document.createElement('div');
+    card.className = 'card'+(curView==='list'?' lc':'');
+    card.style.animationDelay = Math.min(i*28,500)+'ms';
+
+    if(curView==='grid'){
+      card.innerHTML =
+        '<img src="'+esc(img.src)+'" alt="'+esc(img.name)+'" loading="lazy" onerror="this.closest(\'.card\').style.display=\'none\'">'+
+        '<div class="cov">'+
+          '<button class="ovb pr" onclick="openLb(event,'+gi+')">🔍 Preview</button>'+
+          '<a class="ovb" href="'+esc(img.src)+'" target="_blank" rel="noopener">⬇ Save</a>'+
+        '</div>'+
+        '<div class="cfoot">'+
+          '<div><div class="cname">'+esc(img.name)+'</div><div class="cdim">'+img.type.toUpperCase()+'</div></div>'+
+          '<span class="ctype">'+img.type.toUpperCase()+'</span>'+
+        '</div>';
+      card.addEventListener('click', function(e){
+        if(e.target.tagName==='A'||e.target.tagName==='BUTTON') return;
         openLb(e, gi);
       });
     } else {
-      card.innerHTML = `
-        <img src="${esc(img.src)}" alt="${esc(img.name)}" loading="lazy"
-             onerror="this.closest('.card').style.display='none'"
-             onclick="openLb(event,${gi})" style="cursor:pointer">
-        <div class="cfoot">
-          <div><div class="cname">${esc(img.name)}</div><div class="cdim">${img.type.toUpperCase()}</div></div>
-          <span class="ctype">${img.type.toUpperCase()}</span>
-        </div>
-        <a class="lcdl" href="${esc(img.src)}" target="_blank" rel="noopener">⬇ Download</a>`;
+      card.innerHTML =
+        '<img src="'+esc(img.src)+'" alt="'+esc(img.name)+'" loading="lazy" onerror="this.closest(\'.card\').style.display=\'none\'" onclick="openLb(event,'+gi+')" style="cursor:pointer">'+
+        '<div class="cfoot">'+
+          '<div><div class="cname">'+esc(img.name)+'</div><div class="cdim">'+img.type.toUpperCase()+'</div></div>'+
+          '<span class="ctype">'+img.type.toUpperCase()+'</span>'+
+        '</div>'+
+        '<a class="lcdl" href="'+esc(img.src)+'" target="_blank" rel="noopener">⬇ Download</a>';
     }
     grid.appendChild(card);
   });
 }
 
-function getFiltered() {
-  let imgs = [...allImgs];
-  if (curFilter !== 'all') imgs = imgs.filter(i => {
-    const t = i.type.toLowerCase();
-    return curFilter==='jpg' ? (t==='jpg'||t==='jpeg') : t===curFilter;
+function getFiltered(){
+  var imgs = allImgs.slice();
+  if(curFilter!=='all') imgs=imgs.filter(function(i){
+    var t=i.type.toLowerCase();
+    return curFilter==='jpg'?(t==='jpg'||t==='jpeg'):t===curFilter;
   });
-  const s = $('ssort').value;
-  if (s==='name') imgs.sort((a,b) => a.name.localeCompare(b.name));
-  else if (s==='type') imgs.sort((a,b) => a.type.localeCompare(b.type));
+  var s=el('ssort').value;
+  if(s==='name') imgs.sort(function(a,b){return a.name.localeCompare(b.name);});
+  else if(s==='type') imgs.sort(function(a,b){return a.type.localeCompare(b.type);});
   return imgs;
 }
 
-/* ============================================================
-   FILTER / VIEW / DOWNLOAD
-   ============================================================ */
-function doFilter(f, el) {
-  curFilter = f;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
-  el.classList.add('on');
+function doFilter(f,btn){
+  curFilter=f;
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  btn.classList.add('on');
   renderGrid();
 }
-function setView(v) {
-  curView = v;
-  $('vbg').classList.toggle('on', v==='grid');
-  $('vbl').classList.toggle('on', v==='list');
+function setView(v){
+  curView=v;
+  el('vbg').classList.toggle('on',v==='grid');
+  el('vbl').classList.toggle('on',v==='list');
   renderGrid();
 }
-function dlAll() {
-  const imgs = getFiltered();
-  if (!imgs.length) { showToast('No images to download'); return; }
-  showToast(`⬇️ Starting ${imgs.length} download${imgs.length!==1?'s':''}…`);
-  imgs.forEach((img, i) => setTimeout(() => {
-    const a = Object.assign(document.createElement('a'),
-      { href:img.src, download:img.name, target:'_blank', rel:'noopener' });
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  }, i * 200));
+function dlAll(){
+  var imgs=getFiltered();
+  if(!imgs.length){showToast('No images to download');return;}
+  showToast('⬇️ Starting '+imgs.length+' download'+(imgs.length!==1?'s':'')+'…');
+  imgs.forEach(function(img,i){
+    setTimeout(function(){
+      var a=document.createElement('a');
+      a.href=img.src; a.download=img.name; a.target='_blank'; a.rel='noopener';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    },i*200);
+  });
 }
 
-/* ============================================================
-   LIGHTBOX
-   ============================================================ */
-function openLb(e, idx) {
-  if (e) e.stopPropagation();
-  lbIdx = idx; renderLb();
-  $('lb').classList.add('open');
-  document.body.style.overflow = 'hidden';
+// ─────────────────────────────────────────────────────────────────
+// LIGHTBOX
+// ─────────────────────────────────────────────────────────────────
+function openLb(e,idx){
+  if(e) e.stopPropagation();
+  lbIdx=idx; renderLb();
+  el('lb').classList.add('open');
+  document.body.style.overflow='hidden';
 }
-function renderLb() {
-  const img = allImgs[lbIdx]; if (!img) return;
-  $('lbimg').src = img.src;
-  $('lbinfo').textContent = img.src;
-  $('lbacts').innerHTML = `
-    <a class="lbbtn" href="${esc(img.src)}" target="_blank" rel="noopener">🔗 Open original</a>
-    <a class="lbbtn" href="${esc(img.src)}" download="${esc(img.name)}" target="_blank" rel="noopener">⬇ Download</a>
-    <button class="lbbtn" onclick="copyUrl('${esc(img.src)}')">📋 Copy URL</button>`;
+function renderLb(){
+  var img=allImgs[lbIdx]; if(!img) return;
+  el('lbimg').src=img.src;
+  el('lbinfo').textContent=img.src;
+  el('lbacts').innerHTML=
+    '<a class="lbbtn" href="'+esc(img.src)+'" target="_blank" rel="noopener">🔗 Open original</a>'+
+    '<a class="lbbtn" href="'+esc(img.src)+'" download="'+esc(img.name)+'" target="_blank" rel="noopener">⬇ Download</a>'+
+    '<button class="lbbtn" onclick="copyUrl(\''+esc(img.src)+'\')">📋 Copy URL</button>';
 }
-function lbNav(d) {
-  if (!$('lb').classList.contains('open')) return;
-  const n = lbIdx+d;
-  if (n>=0 && n<allImgs.length) { lbIdx=n; renderLb(); }
+function lbNav(d){
+  if(!el('lb').classList.contains('open')) return;
+  var n=lbIdx+d;
+  if(n>=0&&n<allImgs.length){lbIdx=n;renderLb();}
 }
-function lbBgClick(e) { if (e.target===$('lb')) closeLb(); }
-function closeLb() {
-  $('lb').classList.remove('open');
-  $('lbimg').src = '';
-  document.body.style.overflow = '';
+function lbBgClick(e){if(e.target===el('lb')) closeLb();}
+function closeLb(){
+  el('lb').classList.remove('open');
+  el('lbimg').src='';
+  document.body.style.overflow='';
 }
-function copyUrl(txt) { navigator.clipboard.writeText(txt).then(() => showToast('✅ Copied!')); }
+function copyUrl(txt){
+  navigator.clipboard.writeText(txt).then(function(){showToast('✅ Copied!');});
+}
 
-/* ============================================================
-   TOAST / RESET
-   ============================================================ */
-function showToast(msg) {
-  const el = Object.assign(document.createElement('div'),
-    { className:'toast', textContent:msg });
-  document.body.appendChild(el);
-  setTimeout(() => el.remove(), 3000);
+// ─────────────────────────────────────────────────────────────────
+// TOAST / RESET
+// ─────────────────────────────────────────────────────────────────
+function showToast(msg){
+  var d=document.createElement('div');
+  d.className='toast'; d.textContent=msg;
+  document.body.appendChild(d);
+  setTimeout(function(){d.remove();},3000);
 }
-function doReset() {
-  if (resultsLocked) {
-    // Just scroll to top, keep results visible
-    window.scrollTo({ top:0, behavior:'smooth' });
-    return;
-  }
-  allImgs = [];
-  $('url-in').value = '';
-  $('rwrap').classList.remove('shown');
-  $('sbox').style.display = 'none';
-  window.scrollTo({ top:0, behavior:'smooth' });
+function doReset(){
+  GEN++; // invalidate any running extraction
+  allImgs=[];
+  el('url-in').value='';
+  el('results-inner').classList.remove('show');
+  el('sbox').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
 </body>
