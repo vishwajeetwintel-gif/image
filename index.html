@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>extract.pics – Extract Images from any Website</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080e;--s1:#0f0f1a;--s2:#161624;--s3:#1d1d2e;
+  --bd:#242436;--bd2:#2e2e44;
+  --a1:#5b5eff;--a2:#ff4d6d;--a3:#00e5c3;--a4:#ffc340;
+  --tx:#e6e6f0;--mu:#68688a;--mu2:#9898b4;
+  --r:12px;--r2:8px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+.glow{position:fixed;border-radius:50%;filter:blur(130px);pointer-events:none;z-index:0;animation:gb 22s ease-in-out infinite alternate}
+.g1{width:700px;height:700px;background:var(--a1);opacity:.07;top:-250px;left:-200px}
+.g2{width:500px;height:500px;background:var(--a2);opacity:.055;bottom:-100px;right:-150px;animation-delay:-9s}
+.g3{width:350px;height:350px;background:var(--a3);opacity:.05;top:45%;left:55%;animation-delay:-5s}
+@keyframes gb{from{transform:translate(0,0) scale(1)}to{transform:translate(50px,35px) scale(1.1)}}
+
+/* NAV */
+header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;border-bottom:1px solid var(--bd);background:rgba(8,8,14,.72);backdrop-filter:blur(20px)}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.18rem;letter-spacing:-.5px;text-decoration:none;color:var(--tx);display:flex;align-items:center;gap:9px}
+.lm{width:30px;height:30px;background:linear-gradient(135deg,var(--a1),var(--a3));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0}
+.logo em{font-style:normal;color:var(--a1)}
+.hnav{display:flex;align-items:center;gap:18px}
+.hnav a{color:var(--mu);font-size:.84rem;text-decoration:none;transition:color .2s}
+.hnav a:hover{color:var(--tx)}
+.nbadge{background:rgba(0,229,195,.1);border:1px solid rgba(0,229,195,.25);color:#4de8d4;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:99px}
+
+/* HERO */
+.hero{position:relative;z-index:1;text-align:center;padding:82px 24px 58px;max-width:700px;margin:0 auto}
+.pill{display:inline-flex;align-items:center;gap:7px;background:rgba(91,94,255,.1);border:1px solid rgba(91,94,255,.25);color:#9b9eff;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border-radius:99px;margin-bottom:22px}
+.pill-dot{width:7px;height:7px;background:var(--a3);border-radius:50%;animation:blink 1.6s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2rem,5.5vw,3.1rem);line-height:1.1;letter-spacing:-1.5px;margin-bottom:15px}
+.gr{background:linear-gradient(100deg,var(--a1) 10%,var(--a3) 90%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hsub{color:var(--mu2);font-size:.98rem;max-width:460px;margin:0 auto 34px;font-weight:300}
+
+/* INPUT */
+.ishell{max-width:640px;margin:0 auto;display:flex;align-items:center;background:var(--s1);border:1.5px solid var(--bd2);border-radius:var(--r);padding:5px 5px 5px 16px;gap:10px;transition:border-color .25s,box-shadow .25s}
+.ishell:focus-within{border-color:var(--a1);box-shadow:0 0 0 4px rgba(91,94,255,.12)}
+.ishell svg{flex-shrink:0;color:var(--mu)}
+.ishell input{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:'DM Sans',sans-serif;font-size:.95rem;min-width:0}
+.ishell input::placeholder{color:var(--mu)}
+.btn-go{background:linear-gradient(135deg,var(--a1),#7c5cf6);color:#fff;border:none;border-radius:9px;padding:11px 22px;font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:opacity .2s,transform .15s;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.btn-go:hover{opacity:.87;transform:translateY(-1px)}
+.btn-go:active{transform:translateY(0)}
+.btn-go:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.hint{font-size:.74rem;color:var(--mu);margin-top:11px;text-align:center}
+.hint kbd{background:var(--s2);border:1px solid var(--bd);border-radius:4px;padding:1px 6px;font-family:'JetBrains Mono',monospace;font-size:.7rem}
+
+/* TERMINAL */
+#sbox{display:none;position:relative;z-index:1;max-width:560px;margin:0 auto 50px;background:var(--s1);border:1px solid var(--bd2);border-radius:var(--r);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.th{display:flex;align-items:center;gap:7px;padding:10px 15px;background:var(--s2);border-bottom:1px solid var(--bd)}
+.tdot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.td1{background:#ff5f57}.td2{background:#ffc02d}.td3{background:#28c940}
+.ttitle{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--mu);margin-left:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbody{padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.sl{display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:.77rem;color:var(--mu);opacity:0;transform:translateX(-6px);transition:opacity .35s,transform .35s,color .3s}
+.sl.vis{opacity:1;transform:translateX(0)}
+.sl.act{color:var(--tx)}
+.sl.done{opacity:.55}
+.sl.done .sli{color:var(--a3)!important}
+.sl.act .sli{color:var(--a4);animation:flicker 1.4s ease-in-out infinite}
+@keyframes flicker{0%,100%{opacity:1}50%{opacity:.3}}
+.sli{width:17px;text-align:center;flex-shrink:0;font-size:.9rem}
+.pw{margin-top:10px;height:3px;background:var(--s3);border-radius:99px;overflow:hidden}
+.pf{height:100%;background:linear-gradient(90deg,var(--a1),var(--a3));border-radius:99px;width:0%;transition:width .6s cubic-bezier(.4,0,.2,1)}
+
+/* RESULTS */
+#rwrap{display:none;position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:0 24px 80px}
+.toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:11px;padding:13px 17px;background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:18px}
+.tbl{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.tbr{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.rcnt{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem}
+.rhost{font-size:.76rem;color:var(--mu);background:var(--s2);padding:3px 10px;border-radius:6px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tabs{display:flex;gap:5px;flex-wrap:wrap}
+.tab{background:var(--s2);border:1px solid var(--bd);color:var(--mu);border-radius:7px;padding:5px 12px;font-size:.76rem;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tab:hover:not(.on){border-color:var(--a1);color:var(--tx)}
+.tab.on{background:var(--a1);border-color:var(--a1);color:#fff}
+.tsel{background:var(--s2);border:1px solid var(--bd);color:var(--tx);border-radius:7px;padding:5px 10px;font-size:.76rem;outline:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+.tsel:focus{border-color:var(--a1)}
+.vt{display:flex;background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding:3px;gap:3px}
+.vb{background:none;border:none;color:var(--mu);cursor:pointer;padding:4px 8px;border-radius:5px;transition:all .2s;display:flex;align-items:center}
+.vb.on{background:var(--a1);color:#fff}
+.vb:hover:not(.on){color:var(--tx)}
+.btn-dla{background:linear-gradient(135deg,var(--a3),#00b89a);color:#070c0b;border:none;border-radius:7px;padding:7px 14px;font-family:'Syne',sans-serif;font-weight:700;font-size:.76rem;cursor:pointer;transition:opacity .2s,transform .15s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.btn-dla:hover{opacity:.85;transform:translateY(-1px)}
+
+/* GRID */
+#igrid{columns:4 240px;column-gap:12px}
+#igrid.lv{columns:1}
+
+/* CARD */
+.card{break-inside:avoid;background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:12px;overflow:hidden;cursor:pointer;position:relative;transition:transform .2s,box-shadow .2s,border-color .2s;animation:cIn .4s ease both}
+.card:hover{transform:translateY(-3px);box-shadow:0 14px 44px rgba(0,0,0,.65);border-color:var(--a1)}
+@keyframes cIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card img{width:100%;display:block;object-fit:cover;background:var(--s2);min-height:60px;max-height:320px}
+.cfoot{padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cname{font-size:.76rem;color:var(--tx);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px}
+.cdim{font-size:.67rem;color:var(--mu);margin-top:1px}
+.ctype{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;background:var(--s3);border:1px solid var(--bd2);color:var(--mu2);border-radius:5px;padding:2px 7px;flex-shrink:0}
+.cov{position:absolute;inset:0;background:rgba(8,8,14,.82);display:flex;align-items:center;justify-content:center;gap:9px;opacity:0;transition:opacity .2s;backdrop-filter:blur(4px)}
+.card:hover .cov{opacity:1}
+.ovb{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.17);color:#fff;border-radius:8px;padding:7px 12px;font-size:.76rem;font-weight:600;cursor:pointer;transition:background .2s,transform .15s;display:flex;align-items:center;gap:5px;text-decoration:none;font-family:'DM Sans',sans-serif}
+.ovb:hover{background:rgba(255,255,255,.18);transform:scale(1.05)}
+.ovb.pr{background:var(--a1);border-color:var(--a1)}
+.ovb.pr:hover{background:#7c7eff}
+.card.lc{display:flex;align-items:center;gap:14px;padding:10px;cursor:default}
+.card.lc:hover{transform:none;box-shadow:none;border-color:var(--bd2)}
+.card.lc img{width:90px;height:62px;flex-shrink:0;object-fit:cover;border-radius:7px;min-height:unset;max-height:unset;cursor:pointer}
+.card.lc .cfoot{flex:1;padding:0}
+.lcdl{background:var(--s3);border:1px solid var(--bd2);color:var(--tx);border-radius:7px;padding:6px 11px;font-size:.73rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:5px;flex-shrink:0;transition:background .2s,border-color .2s}
+.lcdl:hover{background:var(--a1);border-color:var(--a1)}
+.empty{text-align:center;padding:80px 24px;color:var(--mu)}
+.empty .ei{font-size:2.6rem;margin-bottom:14px}
+.empty h3{font-family:'Syne',sans-serif;color:var(--tx);font-size:1.05rem;margin-bottom:7px}
+.empty p{font-size:.85rem;max-width:380px;margin:0 auto;line-height:1.7}
+
+/* LIGHTBOX */
+#lb{display:none;position:fixed;inset:0;background:rgba(4,4,10,.93);z-index:2000;backdrop-filter:blur(14px);align-items:center;justify-content:center}
+#lb.open{display:flex;animation:lbfi .2s ease}
+@keyframes lbfi{from{opacity:0}to{opacity:1}}
+.lbw{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;max-width:92vw}
+.lbw img{max-width:90vw;max-height:72vh;object-fit:contain;border-radius:var(--r);box-shadow:0 28px 80px rgba(0,0,0,.9)}
+.lbx{position:absolute;top:-13px;right:-13px;background:var(--s1);border:1px solid var(--bd2);color:var(--tx);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.85rem;transition:background .2s;z-index:1}
+.lbx:hover{background:var(--s3)}
+.lbacts{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}
+.lbbtn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);color:var(--tx);border-radius:8px;padding:7px 14px;font-size:.8rem;font-weight:500;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:5px;transition:background .2s;font-family:'DM Sans',sans-serif}
+.lbbtn:hover{background:rgba(255,255,255,.15)}
+.lbinfo{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--mu);text-align:center;max-width:500px;word-break:break-all}
+.lbnav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;transition:background .2s}
+.lbnav:hover{background:rgba(255,255,255,.14)}
+.lbprev{left:-58px}.lbnext{right:-58px}
+
+/* TOAST */
+.toast{position:fixed;bottom:26px;right:26px;background:var(--s1);border:1px solid var(--bd2);color:var(--tx);padding:10px 17px;border-radius:var(--r2);font-size:.82rem;z-index:9998;box-shadow:0 8px 28px rgba(0,0,0,.5);display:flex;align-items:center;gap:7px;animation:ti .3s ease}
+@keyframes ti{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* FEATURES */
+.feats{position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:13px;max-width:940px;margin:0 auto;padding:60px 24px 20px}
+.fc{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:24px 20px;transition:border-color .2s,transform .2s}
+.fc:hover{border-color:var(--a1);transform:translateY(-2px)}
+.fi{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:13px}
+.fi1{background:rgba(91,94,255,.12)}.fi2{background:rgba(255,77,109,.12)}.fi3{background:rgba(0,229,195,.12)}.fi4{background:rgba(255,195,64,.12)}
+.fc h3{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;margin-bottom:6px}
+.fc p{font-size:.8rem;color:var(--mu);line-height:1.6}
+footer{position:relative;z-index:1;border-top:1px solid var(--bd);text-align:center;padding:26px 24px;color:var(--mu);font-size:.78rem}
+footer a{color:var(--mu);text-decoration:none}
+footer a:hover{color:var(--tx)}
+@media(max-width:640px){
+  header{padding:13px 18px}
+  .hero{padding:50px 18px 34px}
+  #igrid{columns:2 140px}
+  .lbprev,.lbnext{display:none}
+  .hnav a:not(.nbadge){display:none}
+}
+</style>
+</head>
+<body>
+<div class="glow g1"></div>
+<div class="glow g2"></div>
+<div class="glow g3"></div>
+
+<header>
+  <a href="#" class="logo" id="logo-link">
+    <div class="lm">🖼</div>
+    extract<em>.pics</em>
+  </a>
+  <div class="hnav">
+    <span class="nbadge">Free &amp; No API</span>
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="pill"><div class="pill-dot"></div>No API key required</div>
+  <h1>Extract <span class="gr">every image</span><br>from any website</h1>
+  <p class="hsub">Paste any URL — we fetch the page and pull every image automatically. Free, no login, no API key.</p>
+  <div class="ishell">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="url" id="url-in" placeholder="https://example.com" autocomplete="off" spellcheck="false"/>
+    <button class="btn-go" id="btn-go" onclick="startExtract()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Extract Images
+    </button>
+  </div>
+  <p class="hint">Press <kbd>Enter</kbd> to start &nbsp;·&nbsp; Works on any public URL</p>
+</section>
+
+<!-- TERMINAL -->
+<div id="sbox">
+  <div class="th">
+    <div class="tdot td1"></div><div class="tdot td2"></div><div class="tdot td3"></div>
+    <span class="ttitle" id="ttitle">extract.pics — browser session</span>
+  </div>
+  <div class="tbody">
+    <div class="sl" id="sl0"><span class="sli">⏳</span><span id="sl0t">Waiting for browser...</span></div>
+    <div class="sl" id="sl1"><span class="sli">🌐</span><span id="sl1t">Loading page...</span></div>
+    <div class="sl" id="sl2"><span class="sli">↕️</span><span id="sl2t">Scrolling down...</span></div>
+    <div class="sl" id="sl3"><span class="sli">🔍</span><span id="sl3t">Finding images...</span></div>
+    <div class="sl" id="sl4"><span class="sli">🧠</span><span id="sl4t">Analyzing images...</span></div>
+    <div class="sl" id="sl5"><span class="sli">✅</span><span id="sl5t">Done!</span></div>
+    <div class="pw"><div class="pf" id="pf"></div></div>
+  </div>
+</div>
+
+<!-- RESULTS — never hidden once shown -->
+<div id="rwrap">
+  <div class="toolbar">
+    <div class="tbl">
+      <span class="rcnt" id="rcnt">0 images</span>
+      <span class="rhost" id="rhost"></span>
+      <div class="tabs">
+        <button class="tab on" data-f="all"  onclick="doFilter('all',this)">All</button>
+        <button class="tab"    data-f="jpg"  onclick="doFilter('jpg',this)">JPG</button>
+        <button class="tab"    data-f="png"  onclick="doFilter('png',this)">PNG</button>
+        <button class="tab"    data-f="gif"  onclick="doFilter('gif',this)">GIF</button>
+        <button class="tab"    data-f="svg"  onclick="doFilter('svg',this)">SVG</button>
+        <button class="tab"    data-f="webp" onclick="doFilter('webp',this)">WebP</button>
+        <button class="tab"    data-f="avif" onclick="doFilter('avif',this)">AVIF</button>
+      </div>
+    </div>
+    <div class="tbr">
+      <select class="tsel" id="ssort" onchange="renderGrid()">
+        <option value="default">Default order</option>
+        <option value="name">Sort by name</option>
+        <option value="type">Sort by type</option>
+      </select>
+      <div class="vt">
+        <button class="vb on" id="vbg" title="Grid" onclick="setView('grid')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        </button>
+        <button class="vb" id="vbl" title="List" onclick="setView('list')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="9" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1.5" fill="currentColor" stroke="none"/></svg>
+        </button>
+      </div>
+      <button class="btn-dla" onclick="dlAll()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download All
+      </button>
+    </div>
+  </div>
+  <div id="igrid"></div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how" style="position:relative;z-index:1;max-width:820px;margin:0 auto;padding:60px 24px 10px;text-align:center">
+  <h2 style="font-family:'Syne',sans-serif;font-size:1.65rem;font-weight:800;margin-bottom:9px">How it works</h2>
+  <p style="color:var(--mu2);font-size:.88rem;margin-bottom:34px">Three steps, completely free — no API key needed</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:13px;text-align:left">
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:22px">
+      <div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--a1);margin-bottom:9px">01</div>
+      <h3 style="font-family:'Syne',sans-serif;font-size:.88rem;margin-bottom:5px">Paste a URL</h3>
+      <p style="font-size:.79rem;color:var(--mu)">Any public website — news, e-commerce, blog, portfolio.</p>
+    </div>
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:22px">
+      <div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--a2);margin-bottom:9px">02</div>
+      <h3 style="font-family:'Syne',sans-serif;font-size:.88rem;margin-bottom:5px">We fetch &amp; parse</h3>
+      <p style="font-size:.79rem;color:var(--mu)">Page is fetched via CORS proxy and all image sources are deeply scanned from the HTML.</p>
+    </div>
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:22px">
+      <div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--a3);margin-bottom:9px">03</div>
+      <h3 style="font-family:'Syne',sans-serif;font-size:.88rem;margin-bottom:5px">Preview &amp; Download</h3>
+      <p style="font-size:.79rem;color:var(--mu)">Filter by type, preview in lightbox, and download one-by-one or all at once.</p>
+    </div>
+  </div>
+</section>
+
+<div class="feats" id="features">
+  <div class="fc"><div class="fi fi1">⚡</div><h3>No API Key</h3><p>100% free. Uses public CORS proxies — no sign-up, no account, no limits.</p></div>
+  <div class="fc"><div class="fi fi2">🎯</div><h3>Deep Extraction</h3><p>Finds img src, srcset, picture, CSS url(), og:image, twitter:image, data-src &amp; more.</p></div>
+  <div class="fc"><div class="fi fi3">🔧</div><h3>Smart Filters</h3><p>Filter by JPG, PNG, GIF, SVG, WebP, AVIF. Sort and switch grid/list view.</p></div>
+  <div class="fc"><div class="fi fi4">📦</div><h3>Bulk Download</h3><p>Download all visible images at once with one click.</p></div>
+</div>
+
+<footer>
+  <p>© 2025 extract.pics &nbsp;·&nbsp; Free image extractor &nbsp;·&nbsp; <a href="#">Privacy</a> &nbsp;·&nbsp; <a href="#">Terms</a></p>
+</footer>
+
+<!-- LIGHTBOX -->
+<div id="lb" onclick="lbBgClick(event)">
+  <div class="lbw">
+    <button class="lbx" onclick="closeLb()">✕</button>
+    <button class="lbnav lbprev" onclick="lbNav(-1)">‹</button>
+    <button class="lbnav lbnext" onclick="lbNav(+1)">›</button>
+    <img id="lbimg" src="" alt="">
+    <div class="lbacts" id="lbacts"></div>
+    <div class="lbinfo" id="lbinfo"></div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────────────
+let allImgs   = [];
+let curFilter = 'all';
+let curView   = 'grid';
+let lbIdx     = 0;
+let isRunning = false;   // prevent double-clicks
+
+// ── KEYBOARD ──────────────────────────────────────────────────────────────────
+document.getElementById('url-in').addEventListener('keydown', e => {
+  if (e.key === 'Enter') startExtract();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape')      closeLb();
+  if (e.key === 'ArrowLeft')   lbNav(-1);
+  if (e.key === 'ArrowRight')  lbNav(+1);
+});
+document.getElementById('logo-link').addEventListener('click', e => {
+  e.preventDefault();
+  if (!isRunning) resetAll();
+});
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+const $   = id => document.getElementById(id);
+const wait = ms => new Promise(r => setTimeout(r, ms));
+
+function stepShow(id)  { $(id).classList.add('vis'); }
+function stepDone(id)  { $(id).classList.remove('act'); $(id).classList.add('done'); }
+function stepActive(id){
+  // mark any currently-active step as done first
+  ['sl0','sl1','sl2','sl3','sl4','sl5'].forEach(s => {
+    if ($(s).classList.contains('act')) stepDone(s);
+  });
+  $(id).classList.add('act');
+}
+function setProg(p, color) {
+  const pf = $('pf');
+  pf.style.width = p + '%';
+  if (color) pf.style.background = color;
+}
+
+// ── PROXY LIST ────────────────────────────────────────────────────────────────
+// Returns the raw HTML string or throws
+async function fetchViaProxy(url) {
+  const proxies = [
+    async () => {
+      const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}&t=${Date.now()}`,
+                            { signal: AbortSignal.timeout(12000) });
+      if (!r.ok) throw new Error('allorigins ' + r.status);
+      const j = await r.json();
+      if (!j.contents || j.contents.length < 100) throw new Error('allorigins empty');
+      return { html: j.contents, name: 'allorigins' };
+    },
+    async () => {
+      const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`,
+                            { signal: AbortSignal.timeout(12000) });
+      if (!r.ok) throw new Error('corsproxy ' + r.status);
+      const t = await r.text();
+      if (!t || t.length < 100) throw new Error('corsproxy empty');
+      return { html: t, name: 'corsproxy.io' };
+    },
+    async () => {
+      const r = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+                            { signal: AbortSignal.timeout(12000) });
+      if (!r.ok) throw new Error('codetabs ' + r.status);
+      const t = await r.text();
+      if (!t || t.length < 100) throw new Error('codetabs empty');
+      return { html: t, name: 'codetabs' };
+    },
+    async () => {
+      const r = await fetch(`https://thingproxy.freeboard.io/fetch/${url}`,
+                            { signal: AbortSignal.timeout(12000) });
+      if (!r.ok) throw new Error('thingproxy ' + r.status);
+      const t = await r.text();
+      if (!t || t.length < 100) throw new Error('thingproxy empty');
+      return { html: t, name: 'thingproxy' };
+    }
+  ];
+
+  const errors = [];
+  for (const fn of proxies) {
+    try { return await fn(); } catch(e) { errors.push(e.message); }
+  }
+  throw new Error('All proxies failed: ' + errors.join(' | '));
+}
+
+// ── MAIN ──────────────────────────────────────────────────────────────────────
+async function startExtract() {
+  if (isRunning) return;
+
+  let raw = $('url-in').value.trim();
+  if (!raw) { showToast('⚠️ Please enter a URL'); return; }
+  if (!/^https?:\/\//i.test(raw)) raw = 'https://' + raw;
+  try { new URL(raw); } catch(e) { showToast('⚠️ Invalid URL'); return; }
+
+  isRunning = true;
+  allImgs   = [];
+
+  // ── Reset UI (but NEVER hide #rwrap if it already has results) ──
+  $('btn-go').disabled = true;
+
+  // Reset terminal
+  const sbox = $('sbox');
+  sbox.style.display = 'block';
+  ['sl0','sl1','sl2','sl3','sl4','sl5'].forEach(id => { $(id).className = 'sl'; });
+  const pf = $('pf');
+  pf.style.transition = 'none';
+  pf.style.width = '0%';
+  pf.style.background = 'linear-gradient(90deg,var(--a1),var(--a3))';
+  // force reflow so transition reset takes effect
+  void pf.offsetHeight;
+  pf.style.transition = 'width .6s cubic-bezier(.4,0,.2,1)';
+
+  $('ttitle').textContent = new URL(raw).hostname + ' — browser session';
+  sbox.scrollIntoView({ behavior:'smooth', block:'center' });
+
+  // Hide results grid while we're running so we start fresh
+  $('rwrap').style.display = 'none';
+
+  try {
+    // Step 0 — waiting for browser
+    stepShow('sl0'); stepActive('sl0'); setProg(8);
+    await wait(600);
+
+    // Step 1 — loading page (actual fetch)
+    stepShow('sl1'); stepActive('sl1'); setProg(25);
+    $('sl1t').textContent = `Loading page... (${new URL(raw).hostname})`;
+
+    const { html, name: proxyName } = await fetchViaProxy(raw);
+
+    // Step 2 — scrolling
+    stepShow('sl2'); stepActive('sl2'); setProg(45);
+    $('sl2t').textContent = `Scrolling down... (via ${proxyName})`;
+    await wait(650);
+
+    // Step 3 — find images
+    stepShow('sl3'); stepActive('sl3'); setProg(65);
+    const imgs = extractImages(html, raw);
+    $('sl3t').textContent = `Finding images... (${imgs.length} found)`;
+    await wait(500);
+
+    // Step 4 — analyse / dedup
+    stepShow('sl4'); stepActive('sl4'); setProg(85);
+    $('sl4t').textContent = `Analyzing images... deduplicating`;
+    await wait(450);
+
+    // Step 5 — done
+    setProg(100);
+    stepDone('sl0'); stepDone('sl1'); stepDone('sl2');
+    stepDone('sl3'); stepDone('sl4');
+    stepShow('sl5');
+
+    if (imgs.length > 0) {
+      allImgs = imgs;
+      $(  'sl5').classList.add('act');
+      $('sl5t').textContent = `Done! Found ${imgs.length} image${imgs.length !== 1 ? 's' : ''}`;
+      await wait(550);
+      stepDone('sl5');
+
+      // ── SHOW RESULTS — this is the ONLY place we set allImgs & render ──
+      showResults(raw);
+
+    } else {
+      $('sl5').querySelector('.sli').textContent = '⚠️';
+      $('sl5').classList.add('vis');
+      $('sl5t').textContent = 'No images found on this page.';
+      await wait(400);
+      showNoResults('No images were found. The site may load images via JavaScript (SPA). Try a static page.');
+    }
+
+  } catch (err) {
+    // ── Network / proxy error ──
+    setProg(100, 'linear-gradient(90deg,var(--a2),#ff7a7a)');
+    ['sl0','sl1','sl2','sl3','sl4'].forEach(id => {
+      if ($(id).classList.contains('vis')) stepDone(id);
+    });
+    $('sl5').querySelector('.sli').textContent = '❌';
+    $('sl5').classList.add('vis');
+    $('sl5t').textContent = 'Error: ' + (err.message || 'Unknown error').slice(0, 90);
+    await wait(400);
+    showNoResults(err.message || 'Could not fetch the page. Please check the URL and try again.');
+  }
+
+  $('btn-go').disabled = false;
+  isRunning = false;
+}
+
+// ── SHOW / NO-SHOW RESULTS ────────────────────────────────────────────────────
+function showResults(url) {
+  curFilter = 'all';
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.f === 'all'));
+  $('rhost').textContent = new URL(url).hostname;
+  $('rwrap').style.display = 'block';
+  renderGrid();
+  $('rwrap').scrollIntoView({ behavior:'smooth' });
+}
+
+function showNoResults(msg) {
+  $('rhost').textContent = '';
+  $('rcnt').textContent  = '0 images';
+  $('igrid').innerHTML = `
+    <div class="empty">
+      <div class="ei">⚠️</div>
+      <h3>Could not extract images</h3>
+      <p>${esc(msg)}</p>
+    </div>`;
+  $('rwrap').style.display = 'block';
+  $('rwrap').scrollIntoView({ behavior:'smooth' });
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function renderGrid() {
+  const grid = $('igrid');
+  grid.innerHTML = '';
+  grid.className = curView === 'list' ? 'lv' : '';
+
+  const filtered = getFiltered();
+  $('rcnt').textContent = `${filtered.length} image${filtered.length !== 1 ? 's' : ''}`;
+
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="empty"><div class="ei">🔍</div><h3>No images match</h3><p>Try a different filter.</p></div>`;
+    return;
+  }
+
+  filtered.forEach((img, i) => {
+    const gi   = allImgs.indexOf(img);
+    const card = document.createElement('div');
+    card.className      = 'card' + (curView === 'list' ? ' lc' : '');
+    card.style.animationDelay = Math.min(i * 28, 500) + 'ms';
+
+    if (curView === 'grid') {
+      card.innerHTML = `
+        <img src="${esc(img.src)}" alt="${esc(img.name)}" loading="lazy"
+             onerror="this.closest('.card').style.display='none'">
+        <div class="cov">
+          <button class="ovb pr" onclick="openLb(event,${gi})">🔍 Preview</button>
+          <a class="ovb" href="${esc(img.src)}" target="_blank" rel="noopener">⬇ Save</a>
+        </div>
+        <div class="cfoot">
+          <div><div class="cname">${esc(img.name)}</div><div class="cdim">${img.type.toUpperCase()}</div></div>
+          <span class="ctype">${img.type.toUpperCase()}</span>
+        </div>`;
+      card.addEventListener('click', e => {
+        if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') return;
+        openLb(e, gi);
+      });
+    } else {
+      card.innerHTML = `
+        <img src="${esc(img.src)}" alt="${esc(img.name)}" loading="lazy"
+             onerror="this.closest('.card').style.display='none'"
+             onclick="openLb(event,${gi})" style="cursor:pointer">
+        <div class="cfoot">
+          <div>
+            <div class="cname">${esc(img.name)}</div>
+            <div class="cdim">${img.type.toUpperCase()}</div>
+          </div>
+          <span class="ctype">${img.type.toUpperCase()}</span>
+        </div>
+        <a class="lcdl" href="${esc(img.src)}" target="_blank" rel="noopener">⬇ Download</a>`;
+    }
+    grid.appendChild(card);
+  });
+}
+
+function getFiltered() {
+  let imgs = [...allImgs];
+  if (curFilter !== 'all') {
+    imgs = imgs.filter(i => {
+      const t = i.type.toLowerCase();
+      return curFilter === 'jpg' ? (t === 'jpg' || t === 'jpeg') : t === curFilter;
+    });
+  }
+  const s = $('ssort').value;
+  if (s === 'name') imgs.sort((a, b) => a.name.localeCompare(b.name));
+  else if (s === 'type') imgs.sort((a, b) => a.type.localeCompare(b.type));
+  return imgs;
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/"/g,'&quot;')
+    .replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── IMAGE EXTRACTION ──────────────────────────────────────────────────────────
+function extractImages(html, pageUrl) {
+  const base = new URL(pageUrl);
+  const seen = new Set();
+  const out  = [];
+
+  function abs(src) {
+    if (!src) return null;
+    src = src.trim().replace(/^['"`]|['"`]$/g, '').trim();
+    if (!src || src.startsWith('data:') || src.length < 4) return null;
+    try {
+      if (/^https?:\/\//i.test(src)) return src;
+      if (src.startsWith('//'))       return base.protocol + src;
+      if (src.startsWith('/'))        return base.origin + src;
+      return new URL(src, pageUrl).href;
+    } catch { return null; }
+  }
+
+  function add(src) {
+    const u = abs(src);
+    if (!u) return;
+    const lo = u.toLowerCase();
+    const hasExt = /\.(jpe?g|png|gif|webp|svg|avif|bmp|ico|tiff?)(\?|#|$)/i.test(lo);
+    const hasPath = /\/(image|img|photo|picture|thumb|asset|media|upload|static|cdn|file)/i.test(lo);
+    if (!hasExt && !hasPath) return;
+    const key = u.split('?')[0].split('#')[0];
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push({ src: u, type: getExt(u), name: getFilename(u) });
+  }
+
+  let m;
+
+  // 1 — <img …> all possible lazy-load attrs
+  const imgRe = /<img([^>]{0,3000})>/gi;
+  while ((m = imgRe.exec(html)) !== null) {
+    const a = m[1];
+    for (const attr of ['src','data-src','data-lazy-src','data-original',
+                        'data-url','data-img','data-image','data-hi-res',
+                        'data-lazy','data-echo','data-srcset-img']) {
+      const am = a.match(new RegExp(attr + '\\s*=\\s*["\']([^"\'\\s>]+)', 'i'));
+      if (am) add(am[1]);
+    }
+    // srcset / data-srcset (comma-separated)
+    for (const attr of ['srcset','data-srcset','data-lazy-srcset']) {
+      const sm = a.match(new RegExp(attr + '\\s*=\\s*["\']([^"\']+)', 'i'));
+      if (sm) sm[1].split(',').forEach(s => add(s.trim().split(/\s+/)[0]));
+    }
+  }
+
+  // 2 — <source srcset>  (<picture>)
+  const srcRe = /<source([^>]{0,1000})>/gi;
+  while ((m = srcRe.exec(html)) !== null) {
+    const a = m[1];
+    const ss = a.match(/srcset\s*=\s*["']([^"']+)/i);
+    if (ss) ss[1].split(',').forEach(s => add(s.trim().split(/\s+/)[0]));
+    const sr = a.match(/\bsrc\s*=\s*["']([^"']+)/i);
+    if (sr) add(sr[1]);
+  }
+
+  // 3 — CSS background-image url(…)
+  const cssRe = /url\(\s*["']?([^"')\s]+)["']?\s*\)/gi;
+  while ((m = cssRe.exec(html)) !== null) add(m[1]);
+
+  // 4 — <meta og:image / twitter:image>
+  const metaRe = /<meta[^>]{0,600}>/gi;
+  while ((m = metaRe.exec(html)) !== null) {
+    if (/(og:image|twitter:image|image_src)/i.test(m[0])) {
+      const c = m[0].match(/content\s*=\s*["']([^"']+)/i);
+      if (c) add(c[1]);
+    }
+  }
+
+  // 5 — <a href> pointing to image files
+  const aRe = /<a[^>]{0,500}href\s*=\s*["']([^"']+\.(?:jpe?g|png|gif|webp|svg|avif|bmp))(\?[^"']*)?["']/gi;
+  while ((m = aRe.exec(html)) !== null) add(m[1] + (m[2] || ''));
+
+  // 6 — Inline JSON / JS string literals containing image URLs
+  const jsRe = /["'`](https?:\/\/[^"'`\s]{8,}\.(jpe?g|png|gif|webp|svg|avif|bmp|ico))["'`]/gi;
+  while ((m = jsRe.exec(html)) !== null) add(m[1]);
+
+  // 7 — data-bg / data-background (parallax / lazy libs)
+  const bgRe = /data-(?:bg|background(?:-image)?)\s*=\s*["']?(https?:\/\/[^"'\s>]+)/gi;
+  while ((m = bgRe.exec(html)) !== null) add(m[1]);
+
+  // 8 — <video poster>
+  const vidRe = /<video[^>]{0,400}poster\s*=\s*["']([^"']+)/gi;
+  while ((m = vidRe.exec(html)) !== null) add(m[1]);
+
+  // 9 — <input type=image src>
+  const inpRe = /<input[^>]{0,400}type\s*=\s*["']image["'][^>]{0,400}src\s*=\s*["']([^"']+)/gi;
+  while ((m = inpRe.exec(html)) !== null) add(m[1]);
+
+  return out;
+}
+
+function getExt(url) {
+  try {
+    const p = new URL(url).pathname;
+    const m = p.match(/\.([a-zA-Z0-9]+)$/);
+    return m ? m[1].toLowerCase().replace('jpeg','jpg') : 'img';
+  } catch { return 'img'; }
+}
+
+function getFilename(url) {
+  try {
+    const p = new URL(url).pathname;
+    return decodeURIComponent(p.split('/').filter(Boolean).pop()) || 'image';
+  } catch { return 'image'; }
+}
+
+// ── FILTER / VIEW / DOWNLOAD ──────────────────────────────────────────────────
+function doFilter(f, el) {
+  curFilter = f;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+  renderGrid();
+}
+function setView(v) {
+  curView = v;
+  $('vbg').classList.toggle('on', v === 'grid');
+  $('vbl').classList.toggle('on', v === 'list');
+  renderGrid();
+}
+function dlAll() {
+  const imgs = getFiltered();
+  if (!imgs.length) { showToast('No images to download'); return; }
+  showToast(`⬇️ Opening ${imgs.length} download${imgs.length !== 1 ? 's' : ''}…`);
+  imgs.forEach((img, i) => setTimeout(() => {
+    const a = Object.assign(document.createElement('a'),
+      { href: img.src, download: img.name, target:'_blank', rel:'noopener' });
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }, i * 200));
+}
+
+// ── LIGHTBOX ──────────────────────────────────────────────────────────────────
+function openLb(e, idx) {
+  if (e) e.stopPropagation();
+  lbIdx = idx;
+  renderLb();
+  $('lb').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function renderLb() {
+  const img = allImgs[lbIdx];
+  if (!img) return;
+  $('lbimg').src = img.src;
+  $('lbinfo').textContent = img.src;
+  $('lbacts').innerHTML = `
+    <a class="lbbtn" href="${esc(img.src)}" target="_blank" rel="noopener">🔗 Open original</a>
+    <a class="lbbtn" href="${esc(img.src)}" download="${esc(img.name)}" target="_blank" rel="noopener">⬇ Download</a>
+    <button class="lbbtn" onclick="copyUrl('${esc(img.src)}')">📋 Copy URL</button>`;
+}
+function lbNav(d) {
+  if (!$('lb').classList.contains('open')) return;
+  const n = lbIdx + d;
+  if (n >= 0 && n < allImgs.length) { lbIdx = n; renderLb(); }
+}
+function lbBgClick(e) { if (e.target === $('lb')) closeLb(); }
+function closeLb() {
+  $('lb').classList.remove('open');
+  $('lbimg').src = '';
+  document.body.style.overflow = '';
+}
+function copyUrl(txt) {
+  navigator.clipboard.writeText(txt).then(() => showToast('✅ Copied!'));
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const el = Object.assign(document.createElement('div'), { className:'toast', textContent: msg });
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+// ── RESET ─────────────────────────────────────────────────────────────────────
+function resetAll() {
+  if (isRunning) return;
+  allImgs = [];
+  $('url-in').value = '';
+  $('rwrap').style.display  = 'none';
+  $('sbox').style.display   = 'none';
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+</script>
+</body>
+</html>
