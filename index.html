@@ -25,7 +25,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 @keyframes gb{from{transform:translate(0,0)}to{transform:translate(50px,35px) scale(1.1)}}
 
 header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;border-bottom:1px solid var(--bd);background:rgba(8,8,14,.75);backdrop-filter:blur(20px)}
-.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.18rem;letter-spacing:-.5px;text-decoration:none;color:var(--tx);display:flex;align-items:center;gap:9px}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.18rem;letter-spacing:-.5px;text-decoration:none;color:var(--tx);display:flex;align-items:center;gap:9px;cursor:pointer}
 .lm{width:30px;height:30px;background:linear-gradient(135deg,var(--a1),var(--a3));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0}
 .logo em{font-style:normal;color:var(--a1)}
 .hnav{display:flex;align-items:center;gap:18px}
@@ -40,7 +40,6 @@ header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify
 h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2rem,5.5vw,3.1rem);line-height:1.1;letter-spacing:-1.5px;margin-bottom:15px}
 .gr{background:linear-gradient(100deg,var(--a1) 10%,var(--a3) 90%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hsub{color:var(--mu2);font-size:.98rem;max-width:460px;margin:0 auto 34px;font-weight:300}
-
 .ishell{max-width:640px;margin:0 auto;display:flex;align-items:center;background:var(--s1);border:1.5px solid var(--bd2);border-radius:var(--r);padding:5px 5px 5px 16px;gap:10px;transition:border-color .25s,box-shadow .25s}
 .ishell:focus-within{border-color:var(--a1);box-shadow:0 0 0 4px rgba(91,94,255,.12)}
 .ishell svg{flex-shrink:0;color:var(--mu)}
@@ -71,8 +70,9 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2rem,5.5vw,3.1r
 .pw{margin-top:10px;height:3px;background:var(--s3);border-radius:99px;overflow:hidden}
 .pf{height:100%;background:linear-gradient(90deg,var(--a1),var(--a3));border-radius:99px;width:0%;transition:width .6s cubic-bezier(.4,0,.2,1)}
 
-/* RESULTS */
-#rwrap{display:none;position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:0 24px 80px}
+/* RESULTS - uses visibility trick so layout never collapses */
+#rwrap{position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:0 24px 80px;visibility:hidden;min-height:0;max-height:0;overflow:hidden;pointer-events:none}
+#rwrap.shown{visibility:visible;min-height:unset;max-height:unset;overflow:visible;pointer-events:all}
 .toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:11px;padding:13px 17px;background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:18px}
 .tbl{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
 .tbr{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
@@ -97,7 +97,7 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2rem,5.5vw,3.1r
 .card{break-inside:avoid;background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:12px;overflow:hidden;cursor:pointer;position:relative;transition:transform .2s,box-shadow .2s,border-color .2s;animation:cIn .4s ease both}
 .card:hover{transform:translateY(-3px);box-shadow:0 14px 44px rgba(0,0,0,.65);border-color:var(--a1)}
 @keyframes cIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.card img{width:100%;display:block;object-fit:cover;background:var(--s2);min-height:60px;max-height:320px}
+.card img{width:100%;display:block;object-fit:cover;background:var(--s2);min-height:80px;max-height:320px}
 .cfoot{padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .cname{font-size:.76rem;color:var(--tx);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px}
 .cdim{font-size:.67rem;color:var(--mu);margin-top:1px}
@@ -125,7 +125,7 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2rem,5.5vw,3.1r
 @keyframes lfi{from{opacity:0}to{opacity:1}}
 .lbw{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;max-width:92vw}
 .lbw img{max-width:90vw;max-height:72vh;object-fit:contain;border-radius:var(--r);box-shadow:0 28px 80px rgba(0,0,0,.9)}
-.lbx{position:absolute;top:-13px;right:-13px;background:var(--s1);border:1px solid var(--bd2);color:var(--tx);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.85rem;transition:background .2s;z-index:1}
+.lbx{position:absolute;top:-13px;right:-13px;background:var(--s1);border:1px solid var(--bd2);color:var(--tx);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.85rem;z-index:1;transition:background .2s}
 .lbx:hover{background:var(--s3)}
 .lbacts{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}
 .lbbtn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);color:var(--tx);border-radius:8px;padding:7px 14px;font-size:.8rem;font-weight:500;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:5px;transition:background .2s;font-family:'DM Sans',sans-serif}
@@ -163,9 +163,9 @@ footer a:hover{color:var(--tx)}
 <div class="glow g3"></div>
 
 <header>
-  <a href="#" class="logo" id="logo-link">
+  <div class="logo" onclick="doReset()">
     <div class="lm">🖼</div>extract<em>.pics</em>
-  </a>
+  </div>
   <div class="hnav">
     <span class="nbadge">Free &amp; No API</span>
     <a href="#features">Features</a>
@@ -205,7 +205,7 @@ footer a:hover{color:var(--tx)}
   </div>
 </div>
 
-<!-- RESULTS — only shown after successful extraction -->
+<!-- RESULTS -->
 <div id="rwrap">
   <div class="toolbar">
     <div class="tbl">
@@ -228,10 +228,10 @@ footer a:hover{color:var(--tx)}
         <option value="type">Sort by type</option>
       </select>
       <div class="vt">
-        <button class="vb on" id="vbg" title="Grid" onclick="setView('grid')">
+        <button class="vb on" id="vbg" onclick="setView('grid')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
         </button>
-        <button class="vb" id="vbl" title="List" onclick="setView('list')">
+        <button class="vb" id="vbl" onclick="setView('list')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="9" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1.5" fill="currentColor" stroke="none"/></svg>
         </button>
       </div>
@@ -244,21 +244,20 @@ footer a:hover{color:var(--tx)}
   <div id="igrid"></div>
 </div>
 
-<!-- HOW IT WORKS -->
 <section id="how" style="position:relative;z-index:1;max-width:820px;margin:0 auto;padding:60px 24px 10px;text-align:center">
   <h2 style="font-family:'Syne',sans-serif;font-size:1.65rem;font-weight:800;margin-bottom:9px">How it works</h2>
-  <p style="color:var(--mu2);font-size:.88rem;margin-bottom:34px">Three steps, completely free — no API key needed</p>
+  <p style="color:var(--mu2);font-size:.88rem;margin-bottom:34px">Three steps, completely free</p>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:13px;text-align:left">
-    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:22px"><div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--a1);margin-bottom:9px">01</div><h3 style="font-family:'Syne',sans-serif;font-size:.88rem;margin-bottom:5px">Paste a URL</h3><p style="font-size:.79rem;color:var(--mu)">Any public website — news, e-commerce, blog, portfolio.</p></div>
-    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:22px"><div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--a2);margin-bottom:9px">02</div><h3 style="font-family:'Syne',sans-serif;font-size:.88rem;margin-bottom:5px">We fetch &amp; parse</h3><p style="font-size:.79rem;color:var(--mu)">Page is fetched via CORS proxy and all image sources are deeply scanned.</p></div>
-    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:22px"><div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--a3);margin-bottom:9px">03</div><h3 style="font-family:'Syne',sans-serif;font-size:.88rem;margin-bottom:5px">Preview &amp; Download</h3><p style="font-size:.79rem;color:var(--mu)">Filter by type, preview in lightbox, and download one-by-one or all at once.</p></div>
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:22px"><div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--a1);margin-bottom:9px">01</div><h3 style="font-family:'Syne',sans-serif;font-size:.88rem;margin-bottom:5px">Paste a URL</h3><p style="font-size:.79rem;color:var(--mu)">Any public website — news, e-commerce, blog.</p></div>
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:22px"><div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--a2);margin-bottom:9px">02</div><h3 style="font-family:'Syne',sans-serif;font-size:.88rem;margin-bottom:5px">We fetch &amp; parse</h3><p style="font-size:.79rem;color:var(--mu)">Page fetched via CORS proxy, all image sources deeply scanned.</p></div>
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:22px"><div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--a3);margin-bottom:9px">03</div><h3 style="font-family:'Syne',sans-serif;font-size:.88rem;margin-bottom:5px">Preview &amp; Download</h3><p style="font-size:.79rem;color:var(--mu)">Filter by type, preview in lightbox, download all at once.</p></div>
   </div>
 </section>
 
 <div class="feats" id="features">
-  <div class="fc"><div class="fi fi1">⚡</div><h3>No API Key</h3><p>100% free. Uses public CORS proxies — no sign-up, no account, no limits.</p></div>
-  <div class="fc"><div class="fi fi2">🎯</div><h3>Deep Extraction</h3><p>Finds img src, srcset, picture, CSS url(), og:image, twitter:image, data-src &amp; more.</p></div>
-  <div class="fc"><div class="fi fi3">🔧</div><h3>Smart Filters</h3><p>Filter by JPG, PNG, GIF, SVG, WebP, AVIF. Sort and switch grid/list view.</p></div>
+  <div class="fc"><div class="fi fi1">⚡</div><h3>No API Key</h3><p>100% free. Uses public CORS proxies — no sign-up required.</p></div>
+  <div class="fc"><div class="fi fi2">🎯</div><h3>Deep Extraction</h3><p>img src, srcset, picture, CSS url(), og:image, data-src lazy-load &amp; more.</p></div>
+  <div class="fc"><div class="fi fi3">🔧</div><h3>Smart Filters</h3><p>Filter by JPG, PNG, GIF, SVG, WebP, AVIF. Grid and list view.</p></div>
   <div class="fc"><div class="fi fi4">📦</div><h3>Bulk Download</h3><p>Download all visible images at once with one click.</p></div>
 </div>
 
@@ -277,90 +276,97 @@ footer a:hover{color:var(--tx)}
 </div>
 
 <script>
-// ─────────────────────────────────────────────────────────────────────────────
-// STATE
-// ─────────────────────────────────────────────────────────────────────────────
+/* ============================================================
+   STATE
+   ============================================================ */
 let allImgs   = [];
 let curFilter = 'all';
 let curView   = 'grid';
 let lbIdx     = 0;
-let running   = false;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TINY HELPERS
-// ─────────────────────────────────────────────────────────────────────────────
-const $    = id => document.getElementById(id);
-const wait = ms => new Promise(r => setTimeout(r, ms));
-const esc  = s  => String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+// ── CRITICAL: once TRUE, nothing can hide or clear #rwrap ──
+let resultsLocked = false;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// KEYBOARD
-// ─────────────────────────────────────────────────────────────────────────────
-$('url-in').addEventListener('keydown', e => { if (e.key === 'Enter') startExtract(); });
+/* ============================================================
+   BOOT
+   ============================================================ */
+document.getElementById('url-in').addEventListener('keydown', e => {
+  if (e.key === 'Enter') startExtract();
+});
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape')     closeLb();
   if (e.key === 'ArrowLeft')  lbNav(-1);
   if (e.key === 'ArrowRight') lbNav(+1);
 });
-$('logo-link').addEventListener('click', e => { e.preventDefault(); if (!running) resetAll(); });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TERMINAL HELPERS
-// ─────────────────────────────────────────────────────────────────────────────
-function slVis(id)    { $(id).classList.add('vis'); }
-function slAct(id)    { $(id).classList.add('vis','act'); }
-function slDone(id)   { $(id).classList.remove('act'); $(id).classList.add('done'); }
-function allDone()    { ['sl0','sl1','sl2','sl3','sl4'].forEach(slDone); }
-function setProg(p,c) {
+/* ============================================================
+   SAFE DOM HELPERS — never touch rwrap unless allowed
+   ============================================================ */
+function $(id) { return document.getElementById(id); }
+function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/"/g,'&quot;')
+    .replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Show results section — ONLY called on success, sets lock
+function showRwrap() {
+  resultsLocked = true;
+  $('rwrap').classList.add('shown');
+}
+
+// Hide results — ONLY allowed if lock is not set
+function hideRwrap() {
+  if (resultsLocked) return;   // ← GUARD: cannot hide after success
+  $('rwrap').classList.remove('shown');
+}
+
+/* ============================================================
+   TERMINAL HELPERS
+   ============================================================ */
+function slVis(id)  { $(id).classList.add('vis'); }
+function slAct(id)  { $(id).classList.add('vis','act'); }
+function slDone(id) { $(id).classList.remove('act'); $(id).classList.add('done'); }
+function allDone()  { ['sl0','sl1','sl2','sl3','sl4'].forEach(slDone); }
+function setProg(p, c) {
   const pf = $('pf');
   pf.style.width = p + '%';
   if (c) pf.style.background = c;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// FETCH — tries ONE proxy at a time, stops the moment one succeeds.
-// Errors from failed proxies are completely swallowed here and NEVER
-// bubble up to the UI after a success has already been returned.
-// ─────────────────────────────────────────────────────────────────────────────
+/* ============================================================
+   FETCH  — tries proxies one at a time, returns on first success
+   ============================================================ */
 async function fetchPage(url) {
-  // Each entry: [label, fetchFn]
-  // fetchFn must return the raw HTML string or throw.
   const proxies = [
     ['allorigins', async () => {
-      const r = await fetch(
-        `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&t=${Date.now()}`,
-        { signal: AbortSignal.timeout(15000) }
-      );
+      const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}&t=${Date.now()}`,
+        { signal: AbortSignal.timeout(15000) });
       if (!r.ok) throw new Error(r.status);
       const j = await r.json();
       if (!j.contents || j.contents.length < 200) throw new Error('empty');
       return j.contents;
     }],
     ['corsproxy.io', async () => {
-      const r = await fetch(
-        `https://corsproxy.io/?${encodeURIComponent(url)}`,
-        { signal: AbortSignal.timeout(15000) }
-      );
+      const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`,
+        { signal: AbortSignal.timeout(15000) });
       if (!r.ok) throw new Error(r.status);
       const t = await r.text();
       if (!t || t.length < 200) throw new Error('empty');
       return t;
     }],
     ['codetabs', async () => {
-      const r = await fetch(
-        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-        { signal: AbortSignal.timeout(15000) }
-      );
+      const r = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+        { signal: AbortSignal.timeout(15000) });
       if (!r.ok) throw new Error(r.status);
       const t = await r.text();
       if (!t || t.length < 200) throw new Error('empty');
       return t;
     }],
     ['htmldriven', async () => {
-      const r = await fetch(
-        `https://cors-anywhere.herokuapp.com/${url}`,
-        { headers: { 'X-Requested-With': 'XMLHttpRequest' }, signal: AbortSignal.timeout(15000) }
-      );
+      const r = await fetch(`https://cors-anywhere.herokuapp.com/${url}`,
+        { headers:{'X-Requested-With':'XMLHttpRequest'}, signal: AbortSignal.timeout(15000) });
       if (!r.ok) throw new Error(r.status);
       const t = await r.text();
       if (!t || t.length < 200) throw new Error('empty');
@@ -372,49 +378,45 @@ async function fetchPage(url) {
   for (const [name, fn] of proxies) {
     try {
       const html = await fn();
-      return { html, proxy: name };   // ← SUCCESS: return immediately, stop loop
-    } catch (e) {
-      errs.push(`${name}: ${e.message}`);
-      // Do NOT rethrow — just try the next one
+      return { html, proxy: name };   // ← return immediately on success
+    } catch(e) {
+      errs.push(`${name}:${e.message}`);
     }
   }
-  // Only reach here if ALL proxies failed
-  throw new Error('All proxies failed. Try hosting on GitHub Pages for best results.');
+  throw new Error('All proxies failed. Host on GitHub Pages for best results.');
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MAIN EXTRACT — single linear async flow, one try/catch wrapping everything
-// ─────────────────────────────────────────────────────────────────────────────
+/* ============================================================
+   MAIN EXTRACT
+   ============================================================ */
 async function startExtract() {
-  if (running) return;
-
   let raw = $('url-in').value.trim();
   if (!raw) { showToast('⚠️ Please enter a URL'); return; }
   if (!/^https?:\/\//i.test(raw)) raw = 'https://' + raw;
   try { new URL(raw); } catch { showToast('⚠️ Invalid URL'); return; }
 
-  // ── Lock ──
-  running = true;
+  // Disable button during run
   $('btn-go').disabled = true;
+
+  // Reset lock & images for this new run
+  resultsLocked = false;
   allImgs = [];
 
-  // ── Reset terminal ──
+  // Hide results (only works because lock is false right now)
+  hideRwrap();
+
+  // Show & reset terminal
   $('sbox').style.display = 'block';
   ['sl0','sl1','sl2','sl3','sl4','sl5'].forEach(id => $(id).className = 'sl');
   const pf = $('pf');
   pf.style.transition = 'none';
   pf.style.width = '0%';
   pf.style.background = 'linear-gradient(90deg,var(--a1),var(--a3))';
-  void pf.offsetHeight; // reflow
+  void pf.offsetHeight;
   pf.style.transition = 'width .6s cubic-bezier(.4,0,.2,1)';
-
   $('ttitle').textContent = new URL(raw).hostname + ' — browser session';
   $('sbox').scrollIntoView({ behavior:'smooth', block:'center' });
 
-  // ── Hide grid for this new run ──
-  $('rwrap').style.display = 'none';
-
-  // ── Single try/catch for the entire flow ──
   try {
     // Step 0
     slAct('sl0'); setProg(8);
@@ -423,8 +425,7 @@ async function startExtract() {
     // Step 1 — fetch
     slDone('sl0'); slAct('sl1'); setProg(25);
     $('sl1t').textContent = `Loading page... (${new URL(raw).hostname})`;
-
-    const { html, proxy } = await fetchPage(raw);   // throws only if ALL proxies fail
+    const { html, proxy } = await fetchPage(raw);
 
     // Step 2
     slDone('sl1'); slAct('sl2'); setProg(45);
@@ -442,7 +443,7 @@ async function startExtract() {
     $('sl4t').textContent = `Analyzing images... deduplicating`;
     await wait(400);
 
-    // Step 5 — finalise
+    // Step 5
     allDone();
     setProg(100);
     slVis('sl5');
@@ -450,55 +451,52 @@ async function startExtract() {
     if (imgs.length > 0) {
       allImgs = imgs;
       $('sl5').classList.add('act');
-      $('sl5t').textContent = `Done! Found ${imgs.length} image${imgs.length !== 1 ? 's' : ''}`;
+      $('sl5t').textContent = `Done! Found ${imgs.length} image${imgs.length!==1?'s':''}`;
       await wait(500);
       slDone('sl5');
-      commitResults(raw);   // ← show grid, NEVER called on error path
+
+      // ── COMMIT: build grid, lock results, show ──
+      curFilter = 'all';
+      document.querySelectorAll('.tab').forEach(t =>
+        t.classList.toggle('on', t.dataset.f === 'all')
+      );
+      $('rhost').textContent = new URL(raw).hostname;
+      renderGrid();           // build DOM first
+      showRwrap();            // LOCK & show — nothing can undo this
+      $('rwrap').scrollIntoView({ behavior:'smooth' });
+
     } else {
       $('sl5').querySelector('.sli').textContent = '⚠️';
       $('sl5t').textContent = 'No images found on this page.';
       await wait(300);
-      showEmpty('No images found. The site may load images via JavaScript (React/Next.js). Try a static page or host on GitHub Pages.');
+      showErrorGrid('No images found. The site may use JavaScript to load images. Try a static page.');
     }
 
-  } catch (err) {
-    // Only fires if ALL proxies failed
+  } catch(err) {
     allDone();
     setProg(100, 'linear-gradient(90deg,var(--a2),#ff7896)');
     $('sl5').querySelector('.sli').textContent = '❌';
     slVis('sl5');
-    $('sl5t').textContent = 'Failed: ' + err.message.slice(0, 80);
+    $('sl5t').textContent = 'Failed: ' + String(err.message).slice(0, 80);
     await wait(300);
-    showEmpty(err.message);
+    showErrorGrid(String(err.message));
   }
 
   $('btn-go').disabled = false;
-  running = false;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// COMMIT RESULTS  — the ONE place that makes #rwrap visible with real images
-// ─────────────────────────────────────────────────────────────────────────────
-function commitResults(url) {
-  curFilter = 'all';
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.f === 'all'));
-  $('rhost').textContent = new URL(url).hostname;
-  $('rwrap').style.display = 'block';
-  renderGrid();
-  $('rwrap').scrollIntoView({ behavior: 'smooth' });
-}
-
-function showEmpty(msg) {
+function showErrorGrid(msg) {
   $('rhost').textContent = '';
   $('rcnt').textContent  = '0 images';
   $('igrid').innerHTML   = `<div class="empty"><div class="ei">⚠️</div><h3>Could not extract images</h3><p>${esc(msg)}</p></div>`;
-  $('rwrap').style.display = 'block';
-  $('rwrap').scrollIntoView({ behavior: 'smooth' });
+  // Show without locking — so next run can clear it
+  $('rwrap').classList.add('shown');
+  $('rwrap').scrollIntoView({ behavior:'smooth' });
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// IMAGE EXTRACTION
-// ─────────────────────────────────────────────────────────────────────────────
+/* ============================================================
+   IMAGE EXTRACTION
+   ============================================================ */
 function extractImages(html, pageUrl) {
   const base = new URL(pageUrl);
   const seen = new Set();
@@ -530,23 +528,21 @@ function extractImages(html, pageUrl) {
   }
 
   let m;
-
-  // 1 — <img> all lazy-load variants
+  // 1. <img> all lazy-load variants
   const imgRe = /<img([^>]{0,3000})>/gi;
   while ((m = imgRe.exec(html)) !== null) {
     const a = m[1];
-    for (const attr of ['src','data-src','data-lazy-src','data-original','data-url',
-                        'data-img','data-image','data-hi-res','data-lazy','data-echo']) {
-      const r = a.match(new RegExp(attr + '\\s*=\\s*["\']([^"\'\\s>]+)', 'i'));
+    ['src','data-src','data-lazy-src','data-original','data-url',
+     'data-img','data-image','data-hi-res','data-lazy','data-echo'].forEach(attr => {
+      const r = a.match(new RegExp(attr + '\\s*=\\s*["\']([^"\'\\s>]+)','i'));
       if (r) add(r[1]);
-    }
-    for (const attr of ['srcset','data-srcset','data-lazy-srcset']) {
-      const r = a.match(new RegExp(attr + '\\s*=\\s*["\']([^"\']+)', 'i'));
+    });
+    ['srcset','data-srcset','data-lazy-srcset'].forEach(attr => {
+      const r = a.match(new RegExp(attr + '\\s*=\\s*["\']([^"\']+)','i'));
       if (r) r[1].split(',').forEach(s => add(s.trim().split(/\s+/)[0]));
-    }
+    });
   }
-
-  // 2 — <source>
+  // 2. <source>
   const srcRe = /<source([^>]{0,1000})>/gi;
   while ((m = srcRe.exec(html)) !== null) {
     const ss = m[1].match(/srcset\s*=\s*["']([^"']+)/i);
@@ -554,12 +550,10 @@ function extractImages(html, pageUrl) {
     const sr = m[1].match(/\bsrc\s*=\s*["']([^"']+)/i);
     if (sr) add(sr[1]);
   }
-
-  // 3 — CSS url()
+  // 3. CSS url()
   const cssRe = /url\(\s*["']?([^"')\s]+)["']?\s*\)/gi;
   while ((m = cssRe.exec(html)) !== null) add(m[1]);
-
-  // 4 — meta og:image / twitter:image
+  // 4. og/twitter meta
   const metaRe = /<meta[^>]{0,600}>/gi;
   while ((m = metaRe.exec(html)) !== null) {
     if (/(og:image|twitter:image|image_src)/i.test(m[0])) {
@@ -567,48 +561,40 @@ function extractImages(html, pageUrl) {
       if (c) add(c[1]);
     }
   }
-
-  // 5 — <a href> to image files
+  // 5. <a href> to image files
   const aRe = /<a[^>]{0,500}href\s*=\s*["']([^"']+\.(?:jpe?g|png|gif|webp|svg|avif|bmp))(\?[^"']*)?["']/gi;
-  while ((m = aRe.exec(html)) !== null) add(m[1] + (m[2]||''));
-
-  // 6 — JS / JSON string literals
+  while ((m = aRe.exec(html)) !== null) add(m[1]+(m[2]||''));
+  // 6. JS/JSON string literals
   const jsRe = /["'`](https?:\/\/[^"'`\s]{8,}\.(jpe?g|png|gif|webp|svg|avif|bmp|ico))["'`]/gi;
   while ((m = jsRe.exec(html)) !== null) add(m[1]);
-
-  // 7 — data-bg
+  // 7. data-bg
   const bgRe = /data-(?:bg|background(?:-image)?)\s*=\s*["']?(https?:\/\/[^"'\s>]+)/gi;
   while ((m = bgRe.exec(html)) !== null) add(m[1]);
-
-  // 8 — video poster
+  // 8. video poster
   const vidRe = /<video[^>]{0,400}poster\s*=\s*["']([^"']+)/gi;
   while ((m = vidRe.exec(html)) !== null) add(m[1]);
-
-  // 9 — input[type=image]
-  const inpRe = /<input[^>]{0,400}type\s*=\s*["']image["'][^>]{0,400}src\s*=\s*["']([^"']+)/gi;
-  while ((m = inpRe.exec(html)) !== null) add(m[1]);
 
   return out;
 }
 
 function getExt(url) {
-  try { const m = new URL(url).pathname.match(/\.([a-zA-Z0-9]+)$/); return m ? m[1].toLowerCase().replace('jpeg','jpg') : 'img'; }
+  try { const m = new URL(url).pathname.match(/\.([a-zA-Z0-9]+)$/); return m?m[1].toLowerCase().replace('jpeg','jpg'):'img'; }
   catch { return 'img'; }
 }
 function getFilename(url) {
-  try { return decodeURIComponent(new URL(url).pathname.split('/').filter(Boolean).pop()) || 'image'; }
+  try { return decodeURIComponent(new URL(url).pathname.split('/').filter(Boolean).pop())||'image'; }
   catch { return 'image'; }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// RENDER GRID
-// ─────────────────────────────────────────────────────────────────────────────
+/* ============================================================
+   RENDER GRID
+   ============================================================ */
 function renderGrid() {
   const grid = $('igrid');
   grid.innerHTML = '';
   grid.className = curView === 'list' ? 'lv' : '';
   const filtered = getFiltered();
-  $('rcnt').textContent = `${filtered.length} image${filtered.length !== 1 ? 's' : ''}`;
+  $('rcnt').textContent = `${filtered.length} image${filtered.length!==1?'s':''}`;
 
   if (!filtered.length) {
     grid.innerHTML = `<div class="empty"><div class="ei">🔍</div><h3>No images match</h3><p>Try a different filter.</p></div>`;
@@ -618,9 +604,8 @@ function renderGrid() {
   filtered.forEach((img, i) => {
     const gi = allImgs.indexOf(img);
     const card = document.createElement('div');
-    card.className = 'card' + (curView === 'list' ? ' lc' : '');
+    card.className = 'card' + (curView==='list' ? ' lc' : '');
     card.style.animationDelay = Math.min(i * 28, 500) + 'ms';
-
     if (curView === 'grid') {
       card.innerHTML = `
         <img src="${esc(img.src)}" alt="${esc(img.name)}" loading="lazy"
@@ -634,7 +619,7 @@ function renderGrid() {
           <span class="ctype">${img.type.toUpperCase()}</span>
         </div>`;
       card.addEventListener('click', e => {
-        if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') return;
+        if (e.target.tagName==='A'||e.target.tagName==='BUTTON') return;
         openLb(e, gi);
       });
     } else {
@@ -656,17 +641,17 @@ function getFiltered() {
   let imgs = [...allImgs];
   if (curFilter !== 'all') imgs = imgs.filter(i => {
     const t = i.type.toLowerCase();
-    return curFilter === 'jpg' ? (t==='jpg'||t==='jpeg') : t === curFilter;
+    return curFilter==='jpg' ? (t==='jpg'||t==='jpeg') : t===curFilter;
   });
   const s = $('ssort').value;
-  if (s === 'name') imgs.sort((a,b) => a.name.localeCompare(b.name));
-  else if (s === 'type') imgs.sort((a,b) => a.type.localeCompare(b.type));
+  if (s==='name') imgs.sort((a,b) => a.name.localeCompare(b.name));
+  else if (s==='type') imgs.sort((a,b) => a.type.localeCompare(b.type));
   return imgs;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// FILTER / VIEW / DOWNLOAD
-// ─────────────────────────────────────────────────────────────────────────────
+/* ============================================================
+   FILTER / VIEW / DOWNLOAD
+   ============================================================ */
 function doFilter(f, el) {
   curFilter = f;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
@@ -682,7 +667,7 @@ function setView(v) {
 function dlAll() {
   const imgs = getFiltered();
   if (!imgs.length) { showToast('No images to download'); return; }
-  showToast(`⬇️ Opening ${imgs.length} download${imgs.length!==1?'s':''}…`);
+  showToast(`⬇️ Starting ${imgs.length} download${imgs.length!==1?'s':''}…`);
   imgs.forEach((img, i) => setTimeout(() => {
     const a = Object.assign(document.createElement('a'),
       { href:img.src, download:img.name, target:'_blank', rel:'noopener' });
@@ -690,9 +675,9 @@ function dlAll() {
   }, i * 200));
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// LIGHTBOX
-// ─────────────────────────────────────────────────────────────────────────────
+/* ============================================================
+   LIGHTBOX
+   ============================================================ */
 function openLb(e, idx) {
   if (e) e.stopPropagation();
   lbIdx = idx; renderLb();
@@ -710,10 +695,10 @@ function renderLb() {
 }
 function lbNav(d) {
   if (!$('lb').classList.contains('open')) return;
-  const n = lbIdx + d;
-  if (n >= 0 && n < allImgs.length) { lbIdx = n; renderLb(); }
+  const n = lbIdx+d;
+  if (n>=0 && n<allImgs.length) { lbIdx=n; renderLb(); }
 }
-function lbBgClick(e) { if (e.target === $('lb')) closeLb(); }
+function lbBgClick(e) { if (e.target===$('lb')) closeLb(); }
 function closeLb() {
   $('lb').classList.remove('open');
   $('lbimg').src = '';
@@ -721,19 +706,25 @@ function closeLb() {
 }
 function copyUrl(txt) { navigator.clipboard.writeText(txt).then(() => showToast('✅ Copied!')); }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TOAST / RESET
-// ─────────────────────────────────────────────────────────────────────────────
+/* ============================================================
+   TOAST / RESET
+   ============================================================ */
 function showToast(msg) {
-  const el = Object.assign(document.createElement('div'), { className:'toast', textContent:msg });
+  const el = Object.assign(document.createElement('div'),
+    { className:'toast', textContent:msg });
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 3000);
 }
-function resetAll() {
+function doReset() {
+  if (resultsLocked) {
+    // Just scroll to top, keep results visible
+    window.scrollTo({ top:0, behavior:'smooth' });
+    return;
+  }
   allImgs = [];
   $('url-in').value = '';
-  $('rwrap').style.display = 'none';
-  $('sbox').style.display  = 'none';
+  $('rwrap').classList.remove('shown');
+  $('sbox').style.display = 'none';
   window.scrollTo({ top:0, behavior:'smooth' });
 }
 </script>
